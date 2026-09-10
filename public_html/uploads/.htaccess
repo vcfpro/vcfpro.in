@@ -1,0 +1,12 @@
+# This directory holds user-uploaded files only. Nothing here may ever execute.
+<FilesMatch "\.(php|phtml|php3|php4|php5|php6|php7|php8|phps|phar|cgi|pl|py|sh|shtml)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+RemoveHandler .php .phtml .php3 .php4 .php5 .php6 .php7 .php8
+RemoveType .php .phtml

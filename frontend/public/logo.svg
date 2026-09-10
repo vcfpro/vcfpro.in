@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 110" width="100%" height="100%">
+  <!-- Definitions for Gradients and Filters -->
+  <defs>
+    <!-- Metallic gradient for VCF text -->
+    <linearGradient id="vcfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    
+    <!-- Metallic gradient for PRO text -->
+    <linearGradient id="proGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- Gradient for Cloud Body -->
+    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f8fafc" />
+    </linearGradient>
+    
+    <!-- Gradient for Circuit Lines -->
+    <linearGradient id="circuitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="100%" stop-color="#4facfe" />
+    </linearGradient>
+
+    <!-- Radial gradient for active gemstone nodes -->
+    <radialGradient id="gemGrad" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="30%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </radialGradient>
+
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="2" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.3" />
+    </filter>
+    
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <style>
+      @keyframes pulse {
+        0%, 100% { opacity: 0.55; filter: drop-shadow(0 0 1px #38bdf8); }
+        50% { opacity: 1; filter: drop-shadow(0 0 8px #38bdf8); }
+      }
+      @keyframes flowCircuit {
+        to { stroke-dashoffset: -40; }
+      }
+      .gem-node {
+        animation: pulse 2.5s infinite ease-in-out;
+      }
+      .circuit-track {
+        stroke-dasharray: 10, 5;
+        animation: flowCircuit 3s infinite linear;
+      }
+      .gem-1 { animation-delay: 0s; }
+      .gem-2 { animation-delay: 0.8s; }
+      .gem-3 { animation-delay: 1.6s; }
+    </style>
+  </defs>
+
+  <!-- Glowing background circuit pathways (subtle) -->
+  <g opacity="0.15">
+    <path d="M 10 90 L 40 55 L 75 55" fill="none" stroke="#38bdf8" stroke-width="2" />
+    <path d="M 25 95 L 45 70 L 80 70" fill="none" stroke="#38bdf8" stroke-width="2" />
+  </g>
+
+  <!-- Main Cloud Container with shadow -->
+  <path d="M 45,85 
+           L 275,85 
+           C 295,85 310,72 310,55 
+           C 310,38 295,25 275,25 
+           C 270,25 264,27 259,30 
+           C 251,18 238,10 220,10 
+           C 202,10 188,18 181,30 
+           C 174,18 160,10 142,10 
+           C 120,10 102,23 96,40 
+           C 91,37 86,35 80,35 
+           C 60,35 45,48 45,65
+           C 40,65 30,70 30,77
+           C 30,82 37,85 45,85 Z" 
+        fill="url(#cloudGrad)" 
+        stroke="#cbd5e1" 
+        stroke-width="1"
+        filter="url(#dropShadow)" />
+
+  <!-- Circuit tracks on the left side of the cloud -->
+  <g fill="none" stroke="url(#circuitGrad)" stroke-linecap="round" filter="url(#glow)">
+    <!-- Circuit Track 1 -->
+    <path className="circuit-track" d="M 45,65 C 50,55 60,42 75,42 M 75,42 L 105,42" stroke-width="3" />
+    <!-- Circuit Track 2 -->
+    <path className="circuit-track" d="M 40,74 C 48,64 58,52 75,52 M 75,52 L 115,52" stroke-width="2.5" />
+    <!-- Circuit Track 3 -->
+    <path className="circuit-track" d="M 48,82 C 55,75 65,62 78,62 M 78,62 L 100,62" stroke-width="2" />
+  </g>
+
+  <!-- Glowing Gem Terminals (Nodes) -->
+  <g filter="url(#glow)">
+    <!-- Gem 1 -->
+    <circle className="gem-node gem-1" cx="105" cy="42" r="4.5" fill="url(#gemGrad)" stroke="#38bdf8" stroke-width="1" />
+    <!-- Gem 2 -->
+    <circle className="gem-node gem-2" cx="115" cy="52" r="4.5" fill="url(#gemGrad)" stroke="#38bdf8" stroke-width="1" />
+    <!-- Gem 3 -->
+    <circle className="gem-node gem-3" cx="100" cy="62" r="4.0" fill="url(#gemGrad)" stroke="#38bdf8" stroke-width="1" />
+    
+    <!-- Left margin terminal circles mimicking microchip joints -->
+    <circle className="gem-node gem-3" cx="45" cy="65" r="3.5" fill="url(#gemGrad)" stroke="#38bdf8" stroke-width="1" />
+    <circle className="gem-node gem-1" cx="40" cy="74" r="3.5" fill="url(#gemGrad)" stroke="#38bdf8" stroke-width="1" />
+    <circle className="gem-node gem-2" cx="48" cy="82" r="3.0" fill="url(#gemGrad)" stroke="#38bdf8" stroke-width="1" />
+  </g>
+
+  <!-- Logotype Typography -->
+  <g transform="translate(15, 0)">
+    <!-- "vcf" in vibrant glassy blue -->
+    <text x="110" y="66" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-weight="900" 
+          font-size="40" 
+          letter-spacing="-1.5" 
+          fill="url(#vcfGrad)">vcf</text>
+          
+    <!-- "pro" in deep space slate gray -->
+    <text x="172" y="66" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-weight="900" 
+          font-size="40" 
+          letter-spacing="-1" 
+          fill="url(#proGrad)">pro</text>
+  </g>
+</svg>

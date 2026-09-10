@@ -1,0 +1,470 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap");
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/*
+ * settings.portfolio.accolades[].color is an admin-configurable Tailwind
+ * class name stored as a plain string in the database and interpolated at
+ * runtime (Home.tsx). Tailwind's content scanner only ever sees the
+ * template-literal pattern, never the resolved class name, so without
+ * this the corresponding utility never gets generated. The admin
+ * Portfolio Editor's Color Class picker (built later) turned out to be a
+ * closed 6-option <select> whose values pair a light + dark shade (e.g.
+ * "text-blue-500 dark:text-blue-400") - but the live site's CURRENT data
+ * predates that picker and still stores the bare, unpaired form
+ * ("text-blue-500", no dark: variant) for two of its three accolades. Both
+ * shapes need to keep working, so this safelists every shade the picker
+ * can produce, not just what's in the database today.
+ */
+@source inline("text-inherit text-{blue,orange,green,red}-{400,500}");
+
+/*
+ * Confirmed via capture/design-tokens.json that the live <body> itself has
+ * background-color/color set to the theme bg/ink (not just left to the
+ * fixed particle canvas) - without this, body is transparent, so anything
+ * taller than one viewport falls back to browser-default white below the
+ * canvas's initial-viewport-sized draw buffer, and any text that doesn't
+ * set an explicit colour class renders as invisible near-black-on-black.
+ * The canvas is the particle *effect* layer, not the page's real
+ * background.
+ */
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    /*
+     * Tailwind v4's preflight dropped the font-smoothing reset that v3 had.
+     * The live site (built on the same Tailwind v4.3.0) still renders with
+     * it - confirmed via computed style (-webkit-font-smoothing:
+     * antialiased vs this build's default "auto") - and the visual
+     * difference is not subtle: "auto" renders visibly heavier/bolder
+     * strokes than "antialiased" at the same nominal font-weight, which
+     * was the dominant source of a same-position, same-size, same-colour
+     * pixel mismatch across every line of body text.
+     */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/*
+ * Design tokens reverse-engineered from the live site's compiled CSS
+ * (public_html/assets/index-NLN86sVZ.css, Tailwind v4.3.0) and from
+ * capture/design-system.md. Colour values are NOT set here - see
+ * src/theme/ThemeContext.tsx, which injects the --theme- and --color-
+ * prefixed variables onto <html> at runtime from GET /api/settings. This
+ * file only declares the
+ * static parts: fonts, type scale, and the two custom utilities the
+ * runtime variables feed into.
+ */
+@theme {
+  /* --- Runtime-themed colours ---
+   * These map Tailwind utilities (bg-bg, text-ink, text-accent, bg-card-bg,
+   * border-card-border, border-line, text-muted) onto the --theme-*
+   * variables that ThemeContext.tsx sets on <html> at runtime. Declaring
+   * them here is what makes Tailwind generate those utility classes at
+   * all - the fallback values below are only ever seen for a single frame
+   * before ThemeContext's mount effect applies the real ones; they exist
+   * so nothing is unstyled if that ever fails.
+   */
+  --color-bg: var(--theme-bg, #050505);
+  --color-ink: var(--theme-ink, #f5f5f5);
+  --color-accent: var(--theme-accent, #818cf8);
+  --color-card-bg: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+  --color-card-border: var(--theme-card-border, rgba(255, 255, 255, 0.08));
+  --color-line: var(--theme-line, rgba(255, 255, 255, 0.05));
+  --color-muted: var(--theme-muted, rgba(245, 245, 245, 0.5));
+
+  /* --- Fonts ---
+   * Loaded via the same remote CSS import the live site uses (see the
+   * @import at the top of this file and capture/external-assets.md).
+   * Weights match exactly what the live bundle requests: Inter
+   * 300/400/500/600/700, Playfair Display 400/500/600 in both normal and
+   * italic (italic is used for pull-quotes).
+   */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+
+  /*
+   * Two DELIBERATELY different off-white values - this is a real
+   * inconsistency in the live site, not a typo. #FAF9F6 is the
+   * admin-configurable "day" background (settings.theme.dayBg) used
+   * everywhere via --theme-bg/--color-bg. #F9FAFB is a SEPARATE, hardcoded
+   * value baked into the particle-canvas component for its light-mode
+   * fill, independent of the admin's colour picker. Keeping both as named
+   * tokens (rather than unifying them) preserves that quirk exactly - see
+   * capture/design-system.md, "Colour system" section.
+   */
+  --color-off-white-admin: #faf9f6;
+  --color-off-white-canvas: #f9fafb;
+
+  /* --- Type scale ---
+   * Named after where each is used, since the live site does not apply
+   * these as blanket element selectors (h1 differs by page - see
+   * capture/design-system.md). Values are the exact computed styles
+   * captured from the live DOM (capture/design-tokens.json).
+   */
+  --text-hero: 44px;
+  --text-hero--line-height: 50.6px;
+  --text-hero--letter-spacing: -1.1px;
+  --text-hero--font-weight: 400;
+
+  --text-post-title: 30px;
+  --text-post-title--line-height: 33px;
+  --text-post-title--letter-spacing: -0.75px;
+  --text-post-title--font-weight: 500;
+
+  --text-section-heading: 22.4px;
+  --text-section-heading--line-height: 33.6px;
+  --text-section-heading--font-weight: 600;
+
+  --text-subsection-heading: 19.2px;
+  --text-subsection-heading--line-height: 28.8px;
+  --text-subsection-heading--font-weight: 600;
+
+  --text-body: 15px;
+  --text-body--line-height: 24px;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 21px;
+
+  /*
+   * Spacing scale (--spacing: .25rem), border radii (sm/md/lg/xl/2xl), and
+   * breakpoints (sm/md/lg at 640/768/1024px) all match Tailwind v4's stock
+   * defaults exactly on the live site - confirmed in capture/design-system.md
+   * - so nothing is overridden here. Cards consistently use rounded-2xl.
+   */
+}
+
+/* Admin Media Library grid - a real custom class in the live CSS, not a
+ * Tailwind utility combo (extracted verbatim from
+ * public_html/assets/index-NLN86sVZ.css). */
+@utility cinematic-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2.5rem;
+}
+
+/*
+ * The live site's signature "frosted glass" card treatment, applied via a
+ * plain glass-panel class name (confirmed in capture/design-tokens.json
+ * className dumps). --theme-card-bg/--theme-card-border/--card-shadow are
+ * all set at runtime by ThemeContext, mode-dependent - see
+ * capture/interactions.md for the exact per-mode values.
+ */
+@utility glass-panel {
+  background-color: var(--theme-card-bg);
+  border: 1px solid var(--theme-card-border);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(24px);
+}
+
+/*
+ * Homepage bento-grid utilities, extracted verbatim (byte-for-byte, not
+ * approximated) from the live compiled CSS at public_html/assets/index-
+ * NLN86sVZ.css - these aren't derivable from Tailwind's own utility classes,
+ * they're the site's own custom effects.
+ */
+@utility liquid-glass {
+  background-blend-mode: luminosity;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  background: #ffffff03;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 1px 1px #ffffff1a;
+}
+.liquid-glass:before {
+  content: "";
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(#ffffff73, #ffffff26, #fff0, #fff0, #ffffff26, #ffffff73);
+  padding: 1.4px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  -webkit-mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
+  -webkit-mask-position: 0 0, 0 0;
+  -webkit-mask-size: auto, auto;
+  -webkit-mask-repeat: repeat, repeat;
+  -webkit-mask-clip: content-box, border-box;
+  -webkit-mask-origin: content-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  mask-mode: match-source, match-source;
+}
+@utility noise-overlay {
+  position: relative;
+}
+.noise-overlay:after {
+  content: "";
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+@keyframes marquee-left {
+  0% {
+    transform: translate(0);
+  }
+  to {
+    transform: translate(-50%);
+  }
+}
+@keyframes marquee-right {
+  0% {
+    transform: translate(-50%);
+  }
+  to {
+    transform: translate(0);
+  }
+}
+@utility animate-marquee-left {
+  animation: 22s linear infinite marquee-left;
+}
+@utility animate-marquee-right {
+  animation: 26s linear infinite marquee-right;
+}
+
+/*
+ * Applies to every "prose" usage sitewide (PostDetail.tsx's post body AND
+ * About.tsx's bio block), not just one page - confirmed by measuring
+ * BOTH against the old server: both land on the exact same 14px/21px
+ * body text and rgba(245,245,245,0.5) muted colour, despite About's
+ * paragraph carrying its own "text-ink/50" utility with no size utility
+ * at all. Stock "prose"/"prose-lg" sizing does NOT match either (measured
+ * directly against the local old server: prose-lg gave 18px/32px body
+ * text and much larger heading margins than what's actually rendered).
+ * The live site's actual computed sizes/margins were measured the same
+ * way and are pinned here - @tailwindcss/typography wraps its own rules
+ * in :where() (zero specificity), so a plain selector like this overrides
+ * it without needing !important - and since these are unlayered CSS,
+ * they'd win over any of Tailwind's own @layer utilities regardless of
+ * specificity/order anyway, which is exactly the global reach wanted here.
+ */
+/*
+ * line-height is deliberately unitless (1.5) rather than an absolute px
+ * value on every rule below. All measured line-heights here are exactly
+ * 1.5x their element's font-size (e.g. h1: 43.2/28.8, p: 21/14) - a
+ * uniform ratio, not a coincidence. It has to stay unitless: a nested
+ * inline element with its own smaller font-size (e.g. the <span
+ * style="font-size:0.875rem"> the raw content wraps its first paragraph
+ * in) inherits a UNITLESS line-height by re-multiplying against its OWN
+ * font-size, but would inherit an absolute px line-height completely
+ * unchanged - confirmed by direct measurement: with an absolute px value
+ * that inner span rendered at the h1's 43.2px line-height instead of the
+ * correct 21px (1.5 x its own 14px), making the whole h1 taller than the
+ * original and throwing off every element positioned after it.
+ */
+.prose :where(p) {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 0;
+  margin-bottom: 21px;
+  color: var(--color-muted);
+}
+.prose :where(h1) {
+  font-size: 28.8px;
+  line-height: 1.5;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+/*
+ * @tailwindcss/typography's own --tw-prose-bold (and, before the fix above,
+ * --tw-prose-headings for h1 - h2/h3 already had their own override right
+ * above) never actually receives its dark-mode-inverted value: prose and
+ * dark:prose-invert are equal-specificity single-class rules inside
+ * Tailwind's own layer, and Tailwind's utility-generation order happens to
+ * land plain "prose" last across this app's several usages, so the
+ * light-mode custom property wins regardless of which theme is active -
+ * confirmed by directly reading getComputedStyle on a real page: bold text
+ * rendered as near-black even with the dark theme's "dark" class present.
+ * Existing content never exposed this because the current editor's
+ * execCommand('bold') emits <b>, which Tailwind Typography's own rule
+ * doesn't even target - it was only found once real <strong> markup was
+ * tested. Links and inline/block code were checked the same way and are
+ * NOT affected: they already have their own explicit overrides just below
+ * (color: inherit / var(--color-muted)) that never reference the broken
+ * Tailwind variable in the first place. Fixed the same way as every other
+ * rule in this block - an unlayered override using this project's own
+ * runtime-updated --color-ink, which always wins regardless of the
+ * upstream cascade bug.
+ */
+.prose {
+  --tw-prose-body: var(--color-muted);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-lead: var(--color-muted);
+  --tw-prose-links: var(--color-ink);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-counters: var(--color-muted);
+  --tw-prose-bullets: var(--color-muted);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-ink);
+  --tw-prose-quote-borders: var(--color-line);
+  --tw-prose-captions: var(--color-muted);
+  --tw-prose-kbd: var(--color-ink);
+  --tw-prose-kbd-shadows: var(--color-line);
+  --tw-prose-code: var(--color-muted);
+  --tw-prose-pre-code: var(--color-muted);
+  --tw-prose-pre-bg: transparent;
+}
+.dark .prose {
+  --tw-prose-body: var(--color-muted);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-lead: var(--color-muted);
+  --tw-prose-links: var(--color-ink);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-counters: var(--color-muted);
+  --tw-prose-bullets: var(--color-muted);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-ink);
+  --tw-prose-quote-borders: var(--color-line);
+  --tw-prose-captions: var(--color-muted);
+  --tw-prose-kbd: var(--color-ink);
+  --tw-prose-kbd-shadows: var(--color-line);
+  --tw-prose-code: var(--color-muted);
+  --tw-prose-pre-code: var(--color-muted);
+  --tw-prose-pre-bg: transparent;
+}
+.prose :where(strong, b) {
+  color: var(--color-ink);
+}
+.prose :where(h2) {
+  font-size: 22.4px;
+  line-height: 1.5;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.prose :where(h3) {
+  font-size: 19.2px;
+  line-height: 1.5;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.prose :where(ol, ul) {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: 24px;
+  padding-left: 8px;
+}
+.prose :where(li) {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 0;
+  margin-bottom: 4px;
+  padding-left: 0;
+  color: var(--color-ink);
+}
+/*
+ * Typography's default link styling (its own accent colour + underline) is
+ * NOT what the live site actually does - measured directly: an in-content
+ * link (an externallink-flagged citation anchor, evidently pasted in from
+ * an AI writing tool - see its stray _ngcontent-... / jslog attributes, part of
+ * the raw stored content, not something to "clean up") renders with the
+ * exact same muted colour as surrounding body text and no underline at
+ * all. Overriding rather than assuming a nicer "accent link" treatment.
+ */
+.prose :where(a) {
+  color: inherit;
+  text-decoration: none;
+}
+.prose :where(code) {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+/*
+ * Stock typography styles <pre> as a distinct "code block" with its own
+ * background, border-radius and generous padding/margin (measured: 28.4px
+ * margin, 14.2px padding, 14.2px font-size). The live site's <pre> blocks
+ * (e.g. terminal commands inside a numbered list) carry NONE of that - they
+ * sit plainly inline with the surrounding list text (measured directly
+ * against the old server: 0 margin, 0 padding, 16px/24px, no background).
+ * Reproduced as measured, not as a typical "code block" would look.
+ */
+.prose :where(pre) {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: transparent;
+  border-radius: 0;
+  color: inherit;
+  font-weight: inherit;
+}
+.prose :where(pre code) {
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+  font-weight: inherit;
+}
+
+/* Public articles favor comfortable, high-contrast long-form reading while
+ * inline styles selected in TipTap remain authoritative. */
+.article-prose :where(p) {
+  font-size: 17px;
+  line-height: 1.8;
+  margin-bottom: 28px;
+  color: color-mix(in srgb, var(--color-ink) 78%, transparent);
+}
+.article-prose :where(h1) {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  line-height: 1.15;
+  margin-top: 42px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+.article-prose :where(h2) {
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+  line-height: 1.25;
+  margin-top: 44px;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+.article-prose :where(h3) {
+  font-size: clamp(1.3rem, 2vw, 1.55rem);
+  line-height: 1.35;
+  margin-top: 34px;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+.article-prose :where(strong, b) {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.article-prose :where(a) {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.article-prose :where(blockquote) {
+  color: color-mix(in srgb, var(--color-ink) 88%, transparent);
+  border-inline-start-color: var(--color-accent);
+  font-size: 18px;
+  line-height: 1.7;
+}
+.article-prose :where(li) {
+  font-size: 17px;
+  line-height: 1.75;
+  color: color-mix(in srgb, var(--color-ink) 82%, transparent);
+}
+

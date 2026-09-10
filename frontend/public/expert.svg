@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Skin & Shadows -->
+    <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5d5c5" />
+      <stop offset="40%" stop-color="#e8bfa9" />
+      <stop offset="100%" stop-color="#cb9683" />
+    </linearGradient>
+    <radialGradient id="scalpGlow" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+    
+    <!-- Beard & Hair Details -->
+    <linearGradient id="beardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2a2a2a" />
+      <stop offset="100%" stop-color="#141414" />
+    </linearGradient>
+
+    <!-- Shirt Navy Color -->
+    <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="50%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#030712" />
+    </linearGradient>
+
+    <!-- Glass Lens Reflections -->
+    <linearGradient id="lensReflect" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.25" />
+      <stop offset="30%" stop-color="#60a5fa" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#050505" stop-opacity="0.6" />
+    </linearGradient>
+
+    <!-- Background Vignette/Merge Gradient (MUST blend perfectly to VCF dark background #050505) -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="50%">
+      <stop offset="60%" stop-color="#050505" stop-opacity="0" />
+      <stop offset="90%" stop-color="#050505" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#050505" stop-opacity="1" />
+    </radialGradient>
+    
+    <!-- Linear horizontal & vertical fades to blend into #050505 -->
+    <linearGradient id="fadeLeft" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#050505" stop-opacity="1" />
+      <stop offset="30%" stop-color="#050505" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="fadeRight" x1="100%" y1="0%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#050505" stop-opacity="1" />
+      <stop offset="30%" stop-color="#050505" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="fadeBottom" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#050505" stop-opacity="1" />
+      <stop offset="25%" stop-color="#050505" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="fadeTop" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#050505" stop-opacity="1" />
+      <stop offset="15%" stop-color="#050505" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Professional Studio Soft Lighting background -->
+    <radialGradient id="studioBg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1e1b4b" stop-opacity="0.4" /> <!-- Soft Indigo glow -->
+      <stop offset="60%" stop-color="#0f172a" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#050505" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background with studio glow -->
+  <rect width="100%" height="100%" fill="#050505" />
+  <circle cx="250" cy="220" r="220" fill="url(#studioBg)" />
+
+  <!-- Main Person Group -->
+  <g transform="translate(0, 15)">
+    <!-- Ears -->
+    <circle cx="150" cy="230" r="16" fill="#cb9683" stroke="#b07d6b" stroke-width="0.5" />
+    <circle cx="150" cy="230" r="10" fill="#e8bfa9" />
+    <circle cx="350" cy="230" r="16" fill="#cb9683" stroke="#b07d6b" stroke-width="0.5" />
+    <circle cx="350" cy="230" r="10" fill="#e8bfa9" />
+
+    <!-- Neck -->
+    <rect x="210" y="270" width="80" height="70" rx="10" fill="#cb9683" />
+    <!-- Neck shadow under chin -->
+    <path d="M 210,285 Q 250,305 290,285 L 290,270 L 210,270 Z" fill="#9e6e5d" opacity="0.8" />
+
+    <!-- Head Shape (Bald) -->
+    <path d="M 160,225 C 160,110 340,110 340,225 C 340,290 325,310 250,310 C 175,310 160,290 160,225 Z" fill="url(#skinGrad)" />
+    <!-- Scalp Highlight (3D Dome Glow) -->
+    <path d="M 175,200 C 175,120 325,120 325,200 C 325,150 175,150 175,200 Z" fill="url(#scalpGlow)" opacity="0.6" />
+    <!-- Forehead texture/crease line -->
+    <path d="M 225,175 Q 250,172 275,175" fill="none" stroke="#b07d6b" stroke-width="1.5" stroke-linecap="round" opacity="0.4" />
+    <path d="M 220,185 Q 250,182 280,185" fill="none" stroke="#b07d6b" stroke-width="1.2" stroke-linecap="round" opacity="0.3" />
+
+    <!-- Beard Base (Full beard outline) -->
+    <path d="M 160,225 
+             C 155,270 170,335 210,355 
+             C 230,365 270,365 290,355 
+             C 330,335 345,270 340,225 
+             C 345,250 335,320 310,345 
+             C 290,360 270,365 250,365 
+             C 230,365 210,360 190,345 
+             C 165,320 155,250 160,225 Z" 
+          fill="url(#beardGrad)" />
+
+    <!-- Mustache & Goatee detailed paths -->
+    <path d="M 215,282 Q 250,292 285,282 Q 295,302 285,312 Q 250,305 215,312 Q 205,302 215,282 Z" fill="#1c1c1c" />
+    <!-- Mouth / Lips -->
+    <path d="M 233,293 Q 250,297 267,293" fill="none" stroke="#9e6e5d" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M 235,293 Q 250,294 265,293" fill="none" stroke="#121212" stroke-width="1" />
+
+    <!-- Beard texture lines (Visualizing full dense beard) -->
+    <path d="M 164,235 C 160,280 180,340 220,356 C 235,362 265,362 280,356 C 320,340 340,280 336,235" fill="none" stroke="#101010" stroke-width="8" stroke-linecap="round" opacity="0.9" />
+    <path d="M 175,250 C 172,290 190,345 250,358 C 310,345 328,290 325,250" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+    <path d="M 210,332 A 40,40 0 0,0 290,332" fill="none" stroke="#111111" stroke-width="5" opacity="0.85" />
+    <path d="M 250,314 L 250,348" stroke="#151515" stroke-width="12" stroke-linecap="round" /> <!-- Goatee path -->
+
+    <!-- Nose (Broad, masculine) -->
+    <path d="M 240,220 C 240,215 244,210 250,210 C 256,210 260,215 260,220 L 262,252 C 262,258 256,263 250,263 C 244,263 238,258 238,252 Z" fill="#dfb59e" />
+    <path d="M 238,252 Q 250,265 262,252" fill="none" stroke="#cb9683" stroke-width="2" />
+
+    <!-- Eyes and Eyebrows -->
+    <path d="M 195,206 Q 212,198 225,208" fill="none" stroke="#1a1a1a" stroke-width="4.5" stroke-linecap="round" /> <!-- Left Brow -->
+    <path d="M 275,208 Q 288,198 305,206" fill="none" stroke="#1a1a1a" stroke-width="4.5" stroke-linecap="round" /> <!-- Right Brow -->
+    
+    <ellipse cx="212" cy="218" rx="8" ry="4" fill="#111" /> <!-- Left Eye -->
+    <ellipse cx="288" cy="218" rx="8" ry="4" fill="#111" /> <!-- Right Eye -->
+    <circle cx="211" cy="217" r="1.5" fill="#fff" /> <!-- Pupil Spark -->
+    <circle cx="287" cy="217" r="1.5" fill="#fff" /> <!-- Pupil Spark -->
+
+    <!-- Glasses (Distinct black rimmed) -->
+    <!-- Left Frame -->
+    <rect x="187" y="202" width="50" height="38" rx="12" fill="url(#lensReflect)" stroke="#111" stroke-width="5" />
+    <!-- Right Frame -->
+    <rect x="263" y="202" width="50" height="38" rx="12" fill="url(#lensReflect)" stroke="#111" stroke-width="5" />
+    <!-- Glasses Bridge -->
+    <path d="M 237,212 L 263,212" stroke="#111" stroke-width="6" stroke-linecap="round" />
+    <!-- Glasses Temples (Sides) -->
+    <path d="M 187,212 H 152" stroke="#111" stroke-width="4" stroke-linecap="round" />
+    <path d="M 313,212 H 348" stroke="#111" stroke-width="4" stroke-linecap="round" />
+
+    <!-- Polo Collar and Shirt -->
+    <path d="M 140,360 
+             C 140,340 170,335 200,335 
+             L 300,335 
+             C 330,335 360,340 360,360 
+             L 375,480 H 125 Z" 
+          fill="url(#shirtGrad)" />
+
+    <!-- Polo Collar V-Neck and Placket -->
+    <path d="M 200,335 L 250,380 L 300,335 L 290,335 L 250,360 L 210,335 Z" fill="#0f172a" />
+    <path d="M 242,375 L 242,440 H 258 L 258,375 Z" fill="#0b0f19" /> <!-- Placket button line -->
+    
+    <!-- Collars (Left & Right Flaps) -->
+    <path d="M 205,335 L 246,380 L 225,385 L 180,342 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
+    <path d="M 295,335 L 254,380 L 275,385 L 320,342 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
+
+    <!-- Buttons -->
+    <circle cx="250" cy="395" r="3.5" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <circle cx="250" cy="418" r="3.5" fill="#1e293b" stroke="#334155" stroke-width="1" />
+
+    <!-- Chest Wrinkles & Shoulder Seams -->
+    <path d="M 180,342 C 160,380 155,420 155,480" stroke="#0f172a" stroke-width="2" fill="none" opacity="0.6" />
+    <path d="M 320,342 C 340,380 345,420 345,480" stroke="#0f172a" stroke-width="2" fill="none" opacity="0.6" />
+    
+    <!-- Chest Logos (Elegantly embroidered on the polo) -->
+    
+    <!-- Left Chest (Viewer's Left): VMware logo -->
+    <g transform="translate(156, 395) scale(0.68)">
+      <!-- VMware visual wordmark -->
+      <text x="0" y="10" font-family="'Inter', sans-serif" font-weight="800" font-size="12" fill="#ffffff" letter-spacing="-0.5">vmware</text>
+      <text x="0" y="19" font-family="'Inter', sans-serif" font-weight="500" font-size="7" fill="#cbd5e1">by Broadcom</text>
+    </g>
+
+    <!-- Right Chest (Viewer's Right): vExpert logo -->
+    <g transform="translate(288, 395) scale(0.68)">
+      <!-- vExpert visual wordmark -->
+      <text x="0" y="10" font-family="'Inter', sans-serif" font-weight="800" font-size="13" fill="#ffffff" letter-spacing="-0.2">vExpert</text>
+      <!-- Small glowing dot/globe for vExpert badge -->
+      <circle cx="56" cy="6" r="3" fill="#00f2fe" filter="url(#glow)" />
+    </g>
+  </g>
+
+  <!-- MULTI-STAGED FADES TO COMBINE THE GRAPHICS FLUSH INTO #050505 -->
+  <!-- We paint large gradient layers over the edges to smoothly fade out -->
+  <rect width="100%" height="100%" fill="url(#vignette)" pointer-events="none" />
+  <rect width="180" height="500" x="0" y="0" fill="url(#fadeLeft)" pointer-events="none" />
+  <rect width="180" height="500" x="320" y="0" fill="url(#fadeRight)" pointer-events="none" />
+  <rect width="500" height="150" x="0" y="350" fill="url(#fadeBottom)" pointer-events="none" />
+  <rect width="500" height="100" x="0" y="0" fill="url(#fadeTop)" pointer-events="none" />
+  
+  <!-- Subtle futuristic ambient overlay lines -->
+  <g stroke="#ffffff" stroke-width="1" opacity="0.03" pointer-events="none">
+    <line x1="50" y1="0" x2="50" y2="500" />
+    <line x1="150" y1="0" x2="150" y2="500" />
+    <line x1="350" y1="0" x2="350" y2="500" />
+    <line x1="450" y1="0" x2="450" y2="500" />
+    <line x1="0" y1="100" x2="500" y2="100" />
+    <line x1="0" y1="400" x2="500" y2="400" />
+  </g>
+</svg>
