@@ -467,4 +467,10 @@
   line-height: 1.75;
   color: color-mix(in srgb, var(--color-ink) 82%, transparent);
 }
+.article-prose,
+.article-prose :where(*) {
+  transition-property: color, background-color, border-color;
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+}
 

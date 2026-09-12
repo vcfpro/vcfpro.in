@@ -220,7 +220,7 @@ export function RichTextEditor({ value, onChange, placeholder, minHeight = "500p
             className="absolute inset-0 opacity-0 cursor-pointer"
           />
         </label>
-        <button type="button" title="Reset Text Color" onClick={() => editor.chain().focus().unsetColor().run()} className="p-1 text-[9px] text-ink/55 hover:text-ink cursor-pointer">Reset</button>
+        <button type="button" title="Use Automatic Theme Color" onClick={() => editor.chain().focus().unsetColor().run()} className="p-1 text-[9px] text-ink/55 hover:text-ink cursor-pointer">Auto</button>
         <label title="Highlight Color" className="relative flex items-center justify-center w-7 h-7 rounded hover:bg-[#000000]/10 dark:hover:bg-neutral-800 cursor-pointer">
           <Highlighter size={13} />
           <span className="absolute bottom-0.5 inset-x-1 h-0.5 rounded" style={{ backgroundColor: highlightColor }} />

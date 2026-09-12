@@ -18,6 +18,41 @@ import type { AdminProfileSettings, Comment, Post } from "../api/types";
 import { CommentEditor } from "../components/post/CommentEditor";
 import { CommentItem } from "../components/post/CommentItem";
 
+function normalizeThemeAwareTextColors(html: string): string {
+  if (typeof DOMParser === "undefined") return html;
+
+  const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
+  const root = doc.body.firstElementChild;
+  if (!root) return html;
+
+  root.querySelectorAll<HTMLElement>("[style]").forEach((element) => {
+    const color = element.style.color.trim();
+    if (!color || color.includes("var(")) return;
+
+    const rgb = color.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+    const hex = color.match(/^#([\da-f]{6})$/i);
+    const channels = rgb
+      ? [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])]
+      : hex
+        ? [
+            Number.parseInt(hex[1].slice(0, 2), 16),
+            Number.parseInt(hex[1].slice(2, 4), 16),
+            Number.parseInt(hex[1].slice(4, 6), 16),
+          ]
+        : null;
+
+    if (!channels) return;
+    const darkest = Math.min(...channels);
+    const lightest = Math.max(...channels);
+    const isNeutral = lightest - darkest <= 12;
+    if (isNeutral && (darkest >= 235 || lightest <= 20)) {
+      element.style.color = "var(--color-ink)";
+    }
+  });
+
+  return root.innerHTML;
+}
+
 /*
  * Reconstructed from a live capture of the rendered page (public_html/
  * assets/index-BxfIvHoc.js) plus local test data seeded against post id 2
@@ -276,7 +311,7 @@ export function PostDetail() {
 
         <div
           className="article-prose prose dark:prose-invert prose-lg max-w-none w-full overflow-hidden break-words whitespace-pre-wrap text-ink"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: normalizeThemeAwareTextColors(post.content) }}
         />
 
         <div className="mt-16 p-6 rounded-2xl bg-[#000000]/5 dark:bg-ink/[0.02] border border-card-border">
