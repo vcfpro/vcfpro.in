@@ -86,6 +86,19 @@ export interface Accolade {
   showDot: boolean;
 }
 
+export interface AboutEntry {
+  title: string;
+  detail: string;
+}
+
+export interface AboutPageSettings {
+  title: string;
+  introduction: string;
+  bio: string;
+  accolades: AboutEntry[];
+  certifications: AboutEntry[];
+}
+
 export interface PortfolioSettings {
   headerGreeting: string;
   headerDescription: string;
@@ -133,6 +146,7 @@ export interface Settings {
   portfolio: PortfolioSettings;
   adminProfile: AdminProfileSettings;
   musicSettings: MusicSettings;
+  aboutPage?: AboutPageSettings;
 }
 
 export interface User {

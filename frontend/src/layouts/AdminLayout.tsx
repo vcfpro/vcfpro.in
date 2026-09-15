@@ -30,6 +30,7 @@ const NAV_ITEMS = [
   { name: "Posts", path: "/admin/post/new", icon: FileText },
   { name: "Media", path: "/admin/media", icon: ImageIcon },
   { name: "Portfolio", path: "/admin/portfolio", icon: FileText },
+  { name: "About Page", path: "/admin/about", icon: FileText },
   { name: "Settings", path: "/admin/settings", icon: SettingsIcon },
 ];
 

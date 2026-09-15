@@ -13,6 +13,7 @@ import { MediaLibrary } from "./pages/admin/MediaLibrary";
 import { PortfolioEditor } from "./pages/admin/PortfolioEditor";
 import { PostEditor } from "./pages/admin/PostEditor";
 import { Settings } from "./pages/admin/Settings";
+import { AboutEditor } from "./pages/admin/AboutEditor";
 import { ThemeProvider } from "./theme/ThemeContext";
 
 // Route tree matches capture/routes.md exactly (11 routes: 4 public + 7
@@ -40,6 +41,7 @@ function App() {
             <Route path="post/:id" element={<PostEditor />} />
             <Route path="media" element={<MediaLibrary />} />
             <Route path="portfolio" element={<PortfolioEditor />} />
+            <Route path="about" element={<AboutEditor />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
