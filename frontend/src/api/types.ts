@@ -89,6 +89,7 @@ export interface Accolade {
 export interface AboutEntry {
   title: string;
   detail: string;
+  imageUrl?: string;
 }
 
 export interface AboutPageSettings {

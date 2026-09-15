@@ -4,24 +4,6 @@ import { Link } from "react-router-dom";
 import { getSettings } from "../api/endpoints";
 import type { AboutPageSettings, PortfolioSettings } from "../api/types";
 
-/*
- * Reconstructed field-for-field from the bundle's About component source
- * (public_html/assets/index-BxfIvHoc.js). Two things confirmed directly
- * from source rather than guessed:
- *
- * - The eyebrow label isn't a separate settings field - it's derived from
- *   the SAME headerGreeting used on the homepage:
- *   "About " + headerGreeting.replace("Hi, I'm ", "").replace("!", "")
- *   ("Hi, I'm Salman! Welcome to my blog." -> "About Salman Welcome to my
- *   blog."). If the admin ever changes headerGreeting to not start with
- *   "Hi, I'm " or not contain "!", this label would render with those
- *   literal strings still in place - reproduced as-is, not defended
- *   against, since the original doesn't defend against it either.
- * - "Designing for the Future." is a hardcoded heading, not settings-driven.
- * - The first paragraph renders settings.portfolio.aboutText (empty on the
- *   live site, hence the empty <p> in every capture) - not a bug, just an
- *   unpopulated field, same pattern as the homepage's statsLabel/Caption.
- */
 export function About() {
   const [settings, setSettings] = useState<PortfolioSettings | null>(null);
   const [about, setAbout] = useState<AboutPageSettings | null>(null);
@@ -70,9 +52,12 @@ export function About() {
               <h2 className="text-2xl md:text-3xl font-serif text-ink mb-6">{heading}</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {entries.filter((entry) => entry.title.trim()).map((entry, index) => (
-                  <div key={`${entry.title}-${index}`} className="rounded-xl border border-card-border bg-card-bg p-5">
-                    <h3 className="text-base font-semibold text-ink">{entry.title}</h3>
-                    {entry.detail && <p className="mt-2 text-sm leading-relaxed text-ink/65">{entry.detail}</p>}
+                  <div key={`${entry.title}-${index}`} className="overflow-hidden rounded-xl border border-card-border bg-card-bg">
+                    {entry.imageUrl && <div className="flex min-h-44 items-center justify-center border-b border-card-border bg-ink/5 p-4"><img src={entry.imageUrl} alt={`${entry.title} badge`} loading="lazy" className="max-h-64 w-full object-contain" /></div>}
+                    <div className="p-5">
+                      <h3 className="text-base font-semibold text-ink">{entry.title}</h3>
+                      {entry.detail && <p className="mt-2 text-sm leading-relaxed text-ink/65">{entry.detail}</p>}
+                    </div>
                   </div>
                 ))}
               </div>
