@@ -288,25 +288,18 @@ export function PostDetail() {
           )}
         </header>
 
-        {post.featured_image ? (
-          <figure className="mb-16 -mx-6 md:-mx-12 lg:-mx-16 rounded-none md:rounded-2xl overflow-hidden glass-panel border-x-0 p-0 shadow-xl">
-            <div className="w-full aspect-video overflow-hidden bg-neutral-900/50">
+        {post.featured_image && (
+          <figure className="mb-16 w-full overflow-hidden rounded-2xl glass-panel p-0 shadow-xl">
+            <div className="flex w-full items-center justify-center overflow-hidden bg-neutral-900/50">
               <img
                 loading="lazy"
                 decoding="async"
                 alt={post.title}
-                className="w-full h-full object-cover saturate-50 hover:saturate-100 transition-all duration-1000"
+                className="block h-auto max-h-[70vh] w-full object-contain saturate-50 transition-all duration-1000 hover:saturate-100"
                 src={post.featured_image}
               />
             </div>
           </figure>
-        ) : (
-          <div className="mb-16 -mx-6 md:-mx-12 lg:-mx-16 rounded-none md:rounded-2xl h-48 bg-ink/10 dark:bg-neutral-900/50 relative border-b border-t border-card-border md:border-x">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 border border-card-border rounded-full" />
-              <div className="absolute w-16 h-16 border border-[var(--color-accent)]/30 rounded-full animate-pulse" />
-            </div>
-          </div>
         )}
 
         <div

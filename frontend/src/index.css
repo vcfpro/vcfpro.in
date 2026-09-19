@@ -467,6 +467,13 @@
   line-height: 1.75;
   color: color-mix(in srgb, var(--color-ink) 82%, transparent);
 }
+.article-prose :where(img) {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
 .article-prose,
 .article-prose :where(*) {
   transition-property: color, background-color, border-color;
