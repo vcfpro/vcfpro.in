@@ -1,6 +1,8 @@
-import { Menu, Moon, Sun, User, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, Moon, Search, Sun, User, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { listPosts } from "../../api/endpoints";
+import type { Post } from "../../api/types";
 import { useTheme } from "../../theme/ThemeContext";
 
 /*
@@ -10,10 +12,6 @@ import { useTheme } from "../../theme/ThemeContext";
  * text-ink/60), exact icon set (lucide sun/moon/menu/x/user), exact button
  * titles ("Switch to Light Mode" / "Switch to Dark Mode" / "Admin Login").
  *
- * The Search button is visually reproduced (same classes/position) but not
- * wired to anything - the search overlay's actual behaviour was outside
- * this task's scope (see capture/routes.md, "Search" was captured open but
- * its contents were never parsed).
  */
 
 const NAV_LINKS = [
@@ -26,7 +24,41 @@ export function Header() {
   const location = useLocation();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [searchError, setSearchError] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const isDark = theme.mode === "dark";
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    searchInputRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSearchOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [searchOpen]);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    let active = true;
+    listPosts()
+      .then((items) => { if (active) { setPosts(items.filter((post) => post.status === "published")); setSearchError(false); } })
+      .catch(() => { if (active) setSearchError(true); });
+    return () => { active = false; };
+  }, [searchOpen]);
+
+  const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  const results = terms.length
+    ? posts.filter((post) => terms.every((term) => `${post.title} ${post.excerpt} ${post.category_name || ""} ${post.content.replace(/<[^>]*>/g, " ")}`.toLocaleLowerCase().includes(term)))
+    : [];
+
+  function openSearch() {
+    setMobileMenuOpen(false);
+    setSearchOpen(true);
+  }
 
   function toggleTheme() {
     setTheme({ ...theme, mode: isDark ? "light" : "dark" });
@@ -74,7 +106,7 @@ export function Header() {
             {isDark ? <Sun size={15} /> : <Moon size={15} />}
           </button>
 
-          <button className="hidden sm:block px-5 py-2 text-[10px] uppercase tracking-widest border border-card-border rounded-full hover:bg-ink hover:text-bg transition-all flex-shrink-0 cursor-pointer text-ink">
+          <button type="button" onClick={openSearch} aria-haspopup="dialog" className="hidden sm:block px-5 py-2 text-[10px] uppercase tracking-widest border border-card-border rounded-full hover:bg-ink hover:text-bg transition-all flex-shrink-0 cursor-pointer text-ink">
             Search
           </button>
 
@@ -111,7 +143,30 @@ export function Header() {
                 </Link>
               );
             })}
-            <button className="text-left text-xl tracking-widest uppercase text-ink/60">Search</button>
+            <button type="button" onClick={openSearch} className="text-left text-xl tracking-widest uppercase text-ink/60">Search</button>
+          </div>
+        </div>
+      )}
+      {searchOpen && (
+        <div role="presentation" className="fixed inset-0 z-[70] h-screen bg-black/65 backdrop-blur-sm p-4 pt-24 md:pt-32" onMouseDown={(event) => { if (event.target === event.currentTarget) setSearchOpen(false); }}>
+          <div role="dialog" aria-modal="true" aria-label="Search posts" className="mx-auto max-w-2xl overflow-hidden rounded-2xl border border-card-border bg-bg shadow-2xl">
+            <div className="flex items-center gap-3 border-b border-card-border p-4 md:p-6">
+              <Search size={20} className="shrink-0 text-[var(--color-accent)]" aria-hidden="true" />
+              <input ref={searchInputRef} type="search" aria-label="Search posts" placeholder="Search articles..." value={query} onChange={(event) => setQuery(event.target.value)} className="min-w-0 flex-1 bg-transparent text-lg text-ink outline-none placeholder:text-ink/40" />
+              <button type="button" onClick={() => setSearchOpen(false)} aria-label="Close search" className="rounded-full p-2 text-ink/60 hover:bg-ink/10 hover:text-ink"><X size={20} /></button>
+            </div>
+            <div className="max-h-[60vh] overflow-y-auto p-3 md:p-4">
+              {searchError ? <p role="status" className="p-4 text-sm text-ink/60">Search is unavailable right now. Please try again.</p>
+                : !terms.length ? <p className="p-4 text-sm text-ink/55">Search titles, topics, or article text.</p>
+                : results.length === 0 ? <p role="status" className="p-4 text-sm text-ink/60">No articles found for “{query.trim()}”.</p>
+                : results.map((post) => (
+                  <Link key={post.id} to={`/post/${post.slug}`} onClick={() => { setSearchOpen(false); setQuery(""); }} className="block rounded-xl p-4 text-ink transition-colors hover:bg-ink/10 focus:bg-ink/10">
+                    <span className="text-xs uppercase tracking-widest text-[var(--color-accent)]">{post.category_name || "Article"}</span>
+                    <span className="mt-1 block font-serif text-xl">{post.title}</span>
+                    {post.excerpt && <span className="mt-2 block text-sm text-ink/55 line-clamp-2">{post.excerpt}</span>}
+                  </Link>
+                ))}
+            </div>
           </div>
         </div>
       )}
