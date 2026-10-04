@@ -13,6 +13,19 @@
 // this scaffold exercises the Member path.
 
 let cachedToken: string | null = null;
+const publicCache = new Map<string, { expires: number; value: unknown }>();
+const publicRequests = new Map<string, Promise<unknown>>();
+const PUBLIC_CACHE_MS = 60_000;
+
+function isCacheablePublicRead(path: string, opts: RequestInit, token: string | null): boolean {
+  if (token || (opts.method && opts.method !== "GET")) return false;
+  return path === "/settings" || path === "/categories" || path === "/posts" || path.startsWith("/posts?") || path.startsWith("/posts/slug/");
+}
+
+function invalidatesPublicContent(path: string, opts: RequestInit): boolean {
+  if (!opts.method || opts.method === "GET") return false;
+  return path === "/settings" || path.startsWith("/posts") || path.startsWith("/categories");
+}
 
 function isUsableToken(value: string | null): value is string {
   return !!value && value !== "null" && value !== "undefined" && value.trim() !== "";
@@ -57,6 +70,13 @@ export class ApiError extends Error {}
  * throw-on-!ok-with-server-message shape. */
 export async function apiFetch<T>(path: string, opts: RequestInit = {}): Promise<T> {
   const token = getToken();
+  const cacheable = isCacheablePublicRead(path, opts, token);
+  if (cacheable) {
+    const cached = publicCache.get(path);
+    if (cached && cached.expires > Date.now()) return cached.value as T;
+    const pending = publicRequests.get(path);
+    if (pending) return pending as Promise<T>;
+  }
   const headers: HeadersInit = {
     "Content-Type": "application/json",
     ...opts.headers,
@@ -65,18 +85,30 @@ export async function apiFetch<T>(path: string, opts: RequestInit = {}): Promise
     (headers as Record<string, string>).Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(`/api${path}`, {
-    cache: "no-store",
-    ...opts,
-    headers,
-  });
+  const request = (async () => {
+    const response = await fetch(`/api${path}`, {
+      cache: cacheable ? "default" : "no-store",
+      ...opts,
+      headers,
+    });
 
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}) as { error?: string });
-    throw new ApiError(body.error || "API Error");
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}) as { error?: string });
+      throw new ApiError(body.error || "API Error");
+    }
+
+    const value = await response.json() as T;
+    if (cacheable) publicCache.set(path, { expires: Date.now() + PUBLIC_CACHE_MS, value });
+    else if (invalidatesPublicContent(path, opts)) publicCache.clear();
+    return value;
+  })();
+
+  if (cacheable) publicRequests.set(path, request);
+  try {
+    return await request;
+  } finally {
+    if (cacheable) publicRequests.delete(path);
   }
-
-  return response.json() as Promise<T>;
 }
 
 /** Mirrors the original's separate `Ii(file)` upload helper - multipart, so

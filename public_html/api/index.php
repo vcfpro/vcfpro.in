@@ -130,42 +130,6 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-    // Dynamically expand database schema if it already exists
-    try {
-        @$pdo->exec("ALTER TABLE posts ADD COLUMN likes INTEGER DEFAULT 0;");
-    } catch (Exception $e) {}
-    try {
-        @$pdo->exec("ALTER TABLE posts ADD COLUMN dislikes INTEGER DEFAULT 0;");
-    } catch (Exception $e) {}
-    try {
-        @$pdo->exec("ALTER TABLE posts ADD COLUMN url TEXT;");
-    } catch (Exception $e) {}
-    try {
-        @$pdo->exec("ALTER TABLE contact_messages ADD COLUMN email TEXT;");
-    } catch (Exception $e) {}
-
-    // Ensure comments table exists
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS comments (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          post_id INTEGER NOT NULL,
-          author_name TEXT NOT NULL,
-          author_role TEXT DEFAULT 'Reader',
-          content TEXT NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          parent_id INTEGER,
-          author_key TEXT,
-          FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE
-        );
-    ");
-
-    try {
-        @$pdo->exec("ALTER TABLE comments ADD COLUMN parent_id INTEGER;");
-    } catch (Exception $e) {}
-    try {
-        @$pdo->exec("ALTER TABLE comments ADD COLUMN author_key TEXT;");
-    } catch (Exception $e) {}
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
@@ -1028,9 +992,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $route === 'stats/online') {
     try {
         $now = time() * 1000;
         $threshold = $now - 40000;
-        $pdo->query("DELETE FROM active_visitors WHERE last_ping <= $threshold");
-
-        $stmtCount = $pdo->query("SELECT COUNT(*) FROM active_visitors");
+        // Keep this endpoint read-only so page loads never compete for a
+        // SQLite write lock. Stale rows are cleaned by the ping endpoint.
+        $stmtCount = $pdo->query("SELECT COUNT(*) FROM active_visitors WHERE last_ping > $threshold");
         $count = (int)$stmtCount->fetchColumn();
         echo json_encode(['count' => $count > 0 ? $count : 1]);
     } catch (Exception $e) {
