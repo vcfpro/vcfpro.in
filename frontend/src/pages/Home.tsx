@@ -265,14 +265,16 @@ export function Home() {
                 <span className="text-[11px] uppercase tracking-[0.22em] text-ink/70 font-semibold">{settings.timelineLabel}</span>
                 <SparkleIcon className="w-3 h-3 text-ink/50" />
               </div>
-              <div className="relative z-10 mt-auto grid grid-cols-[auto_auto_1fr_auto] items-center gap-x-3 gap-y-3 md:gap-y-4 text-xs md:text-[13px] font-medium tracking-wide w-full max-w-sm">
+              <div className="relative z-10 mt-auto flex flex-col gap-3 md:gap-4 text-xs md:text-[13px] font-medium tracking-wide w-full max-w-sm">
                 {settings.timeline.map((entry, i) => (
-                  <Fragment key={i}>
-                    <div className="text-ink text-right">{entry.year}</div>
-                    <SparkleIcon className="w-3 h-3 text-ink/60 mx-1 shrink-0" />
-                    <div className="text-ink/70 truncate">{entry.role}</div>
-                    <div className="text-ink/40 text-right">{entry.company}</div>
-                  </Fragment>
+                  <div key={i} className="flex flex-col gap-1">
+                    <span className="text-ink font-semibold">{entry.company}</span>
+                    <div className="flex items-start gap-2">
+                      <SparkleIcon className="w-3 h-3 text-ink/60 mt-[3px] shrink-0" />
+                      <span className="text-ink/70 flex-1 min-w-0">{entry.role}</span>
+                      <span className="text-ink/40 text-right whitespace-nowrap shrink-0 mt-[1px]">{entry.year}</span>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
