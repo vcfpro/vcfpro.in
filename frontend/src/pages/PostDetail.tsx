@@ -149,29 +149,9 @@ export function PostDetail() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Content-protection: blocks right-click, copy, and Ctrl/Cmd+C/U/S/P.
-  // A real, deliberate feature of the original (confirmed in source) -
-  // reproduced as-is per "cloning, not improving," not something being
-  // endorsed as good UX.
-  useEffect(() => {
-    const preventDefault = (e: Event) => e.preventDefault();
-    const preventKeys = (e: KeyboardEvent) => {
-      if (e.key === "PrintScreen") {
-        navigator.clipboard?.writeText("").catch(() => {});
-      }
-      if ((e.ctrlKey || e.metaKey) && ["c", "u", "s", "p"].includes(e.key)) {
-        e.preventDefault();
-      }
-    };
-    document.addEventListener("contextmenu", preventDefault);
-    document.addEventListener("copy", preventDefault);
-    document.addEventListener("keydown", preventKeys);
-    return () => {
-      document.removeEventListener("contextmenu", preventDefault);
-      document.removeEventListener("copy", preventDefault);
-      document.removeEventListener("keydown", preventKeys);
-    };
-  }, []);
+  // Copy/paste, right-click, and text selection are intentionally left enabled
+  // site-wide. (The original site blocked copy, context menu, and Ctrl/Cmd+C/U/S/P
+  // here; removed per client request.)
 
   async function handleLike() {
     if (hasVoted || !post) return;
