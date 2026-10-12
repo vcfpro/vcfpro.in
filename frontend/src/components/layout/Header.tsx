@@ -72,7 +72,7 @@ export function Header() {
             <img
               alt="VCF PRO"
               className="h-[50px] w-auto object-contain bg-transparent drop-shadow-[0_0_12px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-all duration-300"
-              src="/logo.svg?v=2"
+              src="/logo-3d.png"
             />
           </Link>
         </div>
