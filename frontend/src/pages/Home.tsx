@@ -296,7 +296,7 @@ export function Home() {
                 <span className="text-sm uppercase tracking-[0.24em] text-[var(--color-accent)] font-bold">{settings.clientVoiceLabel}</span>
               </div>
               <div className="relative z-10 mt-auto">
-                <p className="text-lg sm:text-xl lg:text-2xl leading-[1.5] text-white font-bold mb-6 italic font-serif">"{settings.clientQuote}"</p>
+                <p className="text-lg sm:text-xl lg:text-2xl leading-[1.5] text-white font-bold mb-6 font-sans">"{settings.clientQuote}"</p>
                 <div className="text-xs">
                   <span className="font-bold text-white block text-sm">{settings.clientName}</span>
                   <span className="text-white/65 text-sm">{settings.clientRole}</span>
