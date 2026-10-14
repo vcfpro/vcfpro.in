@@ -287,7 +287,7 @@ export function Home() {
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 350, damping: 30 }}
              style={{ order: tileOrder.indexOf("philosophy") }}
-            className="col-span-1 min-h-[220px] lg:min-h-[586px] relative group overflow-hidden rounded-2xl cursor-pointer"
+            className="col-span-1 min-h-[220px] relative group overflow-hidden rounded-2xl cursor-pointer"
           >
             {layoutControls("philosophy")}
             <div className="rounded-2xl text-white p-6 md:p-8 lg:p-10 relative overflow-hidden flex flex-col justify-between transition-all duration-300 shadow-2xl border border-white/15 h-full w-full" style={{ background: "linear-gradient(145deg, #050505 0%, #111111 100%)" }}>
