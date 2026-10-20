@@ -3,7 +3,7 @@ const { chromium } = require("playwright");
 const base = process.env.BASE_URL || "http://127.0.0.1:8001";
 const username = process.env.ADMIN_USERNAME;
 const password = process.env.ADMIN_PASSWORD;
-const fallbackOrder = ["timeline", "philosophy", "stats", "software", "accolades", "contact", "blogs"];
+const fallbackOrder = ["accolades", "timeline", "software", "philosophy", "blogs", "contact", "stats"];
 
 function check(condition, message) {
   if (!condition) throw new Error(message);
