@@ -211,6 +211,13 @@
   bottom: 0;
   left: 0;
 }
+
+/* Screen blending preserves glow on black but washes media out against white. */
+html.light .home-tile-media {
+  mix-blend-mode: normal;
+  opacity: 0.92;
+  filter: saturate(1.08) contrast(1.08);
+}
 @keyframes marquee-left {
   0% {
     transform: translate(0);
