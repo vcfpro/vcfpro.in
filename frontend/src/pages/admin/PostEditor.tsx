@@ -143,8 +143,8 @@ export function PostEditor() {
   const saveLabel = saving ? "Saving..." : form.status === "published" ? "Publish" : "Save";
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto flex flex-col lg:flex-row gap-8">
-      <div className="flex-1 flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className="w-full max-w-[1600px] mx-auto flex flex-col xl:flex-row gap-8 xl:gap-10">
+      <div className="min-w-0 flex-1 flex flex-col gap-6">
         <h1 className="text-3xl font-serif mb-4">{isNew ? "New Post" : "Edit Post"}</h1>
         <input
           type="text"
@@ -159,12 +159,12 @@ export function PostEditor() {
           value={form.content}
           onChange={(html) => field("content", html)}
           placeholder="Write your article narrative here. Use the formatting toolbar to style with bold, italic, underline, insert headings, quotes, bulleted lists, insert emojis, or attach photos visually!"
-          minHeight="500px"
+          minHeight="650px"
           onImageUpload={handleImageUploadForEditor}
         />
       </div>
 
-      <div className="w-full lg:w-80 flex flex-col gap-8 shrink-0">
+      <div className="w-full xl:w-80 flex flex-col gap-8 shrink-0">
         <div className="glass-panel p-6 rounded-2xl flex flex-col gap-6">
           <div className="flex items-center justify-between">
             <h3 className="uppercase tracking-widest text-xs text-ink/50 font-semibold">Status &amp; Visibility</h3>
