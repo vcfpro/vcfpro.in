@@ -148,6 +148,7 @@ export interface Settings {
   adminProfile: AdminProfileSettings;
   musicSettings: MusicSettings;
   aboutPage?: AboutPageSettings;
+  homepageTileOrder?: string[];
 }
 
 export interface User {

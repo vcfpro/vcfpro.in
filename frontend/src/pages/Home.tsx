@@ -18,11 +18,13 @@ import {
   Type,
   WandSparkles,
 } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { getSettings, listPosts, submitContactMessage } from "../api/endpoints";
+import { getSettings, listPosts, saveSettings, submitContactMessage } from "../api/endpoints";
 import { apiFetch } from "../api/client";
 import type { Post, PortfolioSettings } from "../api/types";
+
+const DEFAULT_TILE_ORDER = ["accolades", "timeline", "software", "philosophy", "blogs", "contact", "stats"];
 
 /*
  * Reconstructed field-for-field from the live bundle's bento-grid switch
@@ -105,17 +107,31 @@ export function Home() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [hasServerTileOrder, setHasServerTileOrder] = useState(false);
+  const [layoutSaveStatus, setLayoutSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const layoutSaveQueue = useRef<Promise<unknown>>(Promise.resolve());
+  const layoutMigrationAttempted = useRef(false);
   const [tileOrder, setTileOrder] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem("vcfpro_bento_layout_order") || "null");
       if (Array.isArray(saved) && saved.length >= 6) return saved as string[];
     } catch { /* use the default layout */ }
-    return ["timeline", "philosophy", "stats", "software", "accolades", "contact", "blogs"];
+    return DEFAULT_TILE_ORDER;
   });
 
   useEffect(() => {
     getSettings()
-      .then((s) => setSettings(s.portfolio))
+      .then((s) => {
+        setSettings(s.portfolio);
+        const savedOrder = s.homepageTileOrder;
+        if (Array.isArray(savedOrder) && savedOrder.length === DEFAULT_TILE_ORDER.length && DEFAULT_TILE_ORDER.every((tile) => savedOrder.includes(tile))) {
+          setHasServerTileOrder(true);
+          setTileOrder(savedOrder);
+          try { localStorage.setItem("vcfpro_bento_layout_order", JSON.stringify(savedOrder)); } catch { /* local fallback is optional */ }
+        }
+        setSettingsLoaded(true);
+      })
       .catch(() => {});
     listPosts()
       .then((all) => setPosts(all.filter((p) => p.status === "published")))
@@ -123,20 +139,41 @@ export function Home() {
     apiFetch("/auth/me").then(() => setIsAdmin(true)).catch(() => setIsAdmin(false));
   }, []);
 
+  useEffect(() => {
+    if (!settingsLoaded || !isAdmin || hasServerTileOrder || layoutMigrationAttempted.current) return;
+    layoutMigrationAttempted.current = true;
+    setLayoutSaveStatus("saving");
+    saveSettings({ homepageTileOrder: tileOrder })
+      .then(() => {
+        setHasServerTileOrder(true);
+        setLayoutSaveStatus("saved");
+        window.setTimeout(() => setLayoutSaveStatus("idle"), 1800);
+      })
+      .catch(() => setLayoutSaveStatus("error"));
+  }, [hasServerTileOrder, isAdmin, settingsLoaded, tileOrder]);
+
   function moveTile(tile: string, direction: "up" | "prev" | "next" | "down") {
     const columns = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-    setTileOrder((current) => {
-      const from = current.indexOf(tile);
-      const to = direction === "up" ? from - columns
-        : direction === "down" ? from + columns
-        : direction === "prev" ? from - 1
-        : from + 1;
-      if (from < 0 || to < 0 || to >= current.length) return current;
-      const next = [...current];
-      [next[from], next[to]] = [next[to], next[from]];
-      try { localStorage.setItem("vcfpro_bento_layout_order", JSON.stringify(next)); } catch { /* ignore */ }
-      return next;
-    });
+    const from = tileOrder.indexOf(tile);
+    const to = direction === "up" ? from - columns
+      : direction === "down" ? from + columns
+      : direction === "prev" ? from - 1
+      : from + 1;
+    if (from < 0 || to < 0 || to >= tileOrder.length) return;
+    const next = [...tileOrder];
+    [next[from], next[to]] = [next[to], next[from]];
+    setTileOrder(next);
+    try { localStorage.setItem("vcfpro_bento_layout_order", JSON.stringify(next)); } catch { /* local fallback is optional */ }
+
+    setLayoutSaveStatus("saving");
+    layoutSaveQueue.current = layoutSaveQueue.current
+      .catch(() => undefined)
+      .then(() => saveSettings({ homepageTileOrder: next }))
+      .then(() => {
+        setLayoutSaveStatus("saved");
+        window.setTimeout(() => setLayoutSaveStatus("idle"), 1800);
+      })
+      .catch(() => setLayoutSaveStatus("error"));
   }
 
   function layoutControls(tile: string) {
@@ -148,7 +185,7 @@ export function Home() {
       <div className="absolute top-3 right-3 z-30 flex items-center gap-1.5 bg-black/75 dark:bg-neutral-900/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-all duration-300 shadow-lg scale-95 group-hover:scale-100 pointer-events-auto">
         <button type="button" onClick={() => moveTile(tile, "up")} disabled={index < columns} title="Move Up" className={buttonClass}><ArrowUp className="w-3.5 h-3.5" /></button>
         <button type="button" onClick={() => moveTile(tile, "prev")} disabled={index === 0} title="Move Left" className={buttonClass}><ArrowLeft className="w-3.5 h-3.5" /></button>
-        <div className="text-[9px] text-white/50 px-1 font-mono uppercase tracking-[0.1em] select-none flex items-center gap-1"><Grip className="w-2.5 h-2.5 text-white/40" /><span>Layout</span></div>
+        <div className="text-[9px] text-white/50 px-1 font-mono uppercase tracking-[0.1em] select-none flex items-center gap-1"><Grip className="w-2.5 h-2.5 text-white/40" /><span>{layoutSaveStatus === "saving" ? "Saving" : layoutSaveStatus === "saved" ? "Saved" : layoutSaveStatus === "error" ? "Retry" : "Layout"}</span></div>
         <button type="button" onClick={() => moveTile(tile, "next")} disabled={index === tileOrder.length - 1} title="Move Right" className={buttonClass}><ArrowRight className="w-3.5 h-3.5" /></button>
         <button type="button" onClick={() => moveTile(tile, "down")} disabled={index >= tileOrder.length - columns} title="Move Down" className={buttonClass}><ArrowDown className="w-3.5 h-3.5" /></button>
       </div>
