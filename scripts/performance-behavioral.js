@@ -30,10 +30,14 @@ function check(condition, message, detail = "") {
     check(entryBytes > 0 && entryBytes < 400_000, "Public entry bundle remains below 400 KB", `${entryBytes} bytes`);
     check(interactiveMs < 5_000, "Header becomes interactive within 5 seconds", `${interactiveMs} ms`);
 
+    const blogClickStarted = Date.now();
     await page.getByRole("link", { name: "Blog", exact: true }).click();
     await page.getByRole("heading", { name: "Archive" }).waitFor();
+    check(Date.now() - blogClickStarted < 1_000, "Blog navigation renders within 1 second", `${Date.now() - blogClickStarted} ms`);
+    const aboutClickStarted = Date.now();
     await page.getByRole("link", { name: "About", exact: true }).click();
     await page.getByRole("heading", { level: 1 }).waitFor();
+    check(Date.now() - aboutClickStarted < 1_000, "About navigation renders within 1 second", `${Date.now() - aboutClickStarted} ms`);
     await page.getByRole("link", { name: "Home", exact: true }).click();
     await page.waitForTimeout(500);
 
