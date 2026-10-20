@@ -40,8 +40,8 @@ export function Footer() {
 
     pingStats();
     fetchOnline();
-    const pingInterval = setInterval(pingStats, 15000);
-    const onlineInterval = setInterval(fetchOnline, 15000);
+    const pingInterval = setInterval(pingStats, 60000);
+    const onlineInterval = setInterval(fetchOnline, 60000);
 
     return () => {
       cancelled = true;

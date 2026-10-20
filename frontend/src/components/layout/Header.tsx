@@ -52,7 +52,7 @@ export function Header() {
 
   const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   const results = terms.length
-    ? posts.filter((post) => terms.every((term) => `${post.title} ${post.excerpt} ${post.category_name || ""} ${post.content.replace(/<[^>]*>/g, " ")}`.toLocaleLowerCase().includes(term)))
+    ? posts.filter((post) => terms.every((term) => `${post.title} ${post.excerpt} ${post.category_name || ""}`.toLocaleLowerCase().includes(term)))
     : [];
 
   function openSearch() {

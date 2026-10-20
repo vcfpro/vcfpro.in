@@ -360,8 +360,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $route === 'posts') {
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 0;
     $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
     $category = isset($_GET['category']) ? $_GET['category'] : '';
+    $summary = isset($_GET['summary']) && $_GET['summary'] === '1';
 
-    $query = "SELECT p.*, c.name as category_name, c.slug as category_slug 
+    $postColumns = $summary
+        ? "p.id, p.title, p.slug, '' AS content, p.excerpt, p.featured_image, p.status, p.category_id, p.url, p.created_at, p.published_at, p.likes, p.dislikes"
+        : "p.*";
+    $query = "SELECT $postColumns, c.name as category_name, c.slug as category_slug
               FROM posts p 
               LEFT JOIN categories c ON p.category_id = c.id";
     $conditions = [];
@@ -968,7 +972,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $route === 'stats/ping') {
         try {
             $now = time() * 1000;
             // Clean up old visitors
-            $threshold = $now - 40000;
+            $threshold = $now - 130000;
             $pdo->query("DELETE FROM active_visitors WHERE last_ping <= $threshold");
 
             // Upsert the client ID
@@ -991,7 +995,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $route === 'stats/ping') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $route === 'stats/online') {
     try {
         $now = time() * 1000;
-        $threshold = $now - 40000;
+        $threshold = $now - 130000;
         // Keep this endpoint read-only so page loads never compete for a
         // SQLite write lock. Stale rows are cleaned by the ping endpoint.
         $stmtCount = $pdo->query("SELECT COUNT(*) FROM active_visitors WHERE last_ping > $threshold");

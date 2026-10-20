@@ -54,6 +54,7 @@ export interface ListPostsParams {
   limit?: number;
   offset?: number;
   category?: string;
+  summary?: boolean;
 }
 
 export function listPosts(params: ListPostsParams = {}): Promise<Post[]> {
@@ -62,6 +63,7 @@ export function listPosts(params: ListPostsParams = {}): Promise<Post[]> {
   if (params.limit) query.set("limit", String(params.limit));
   if (params.offset) query.set("offset", String(params.offset));
   if (params.category) query.set("category", params.category);
+  if (params.summary !== false) query.set("summary", "1");
   const qs = query.toString();
   return apiFetch(`/posts${qs ? `?${qs}` : ""}`);
 }

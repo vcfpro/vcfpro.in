@@ -132,7 +132,7 @@ export function PostDetail() {
         .catch(() => {});
     }
     fetchOnline();
-    const interval = setInterval(fetchOnline, 10000);
+    const interval = setInterval(fetchOnline, 60000);
     return () => {
       cancelled = true;
       clearInterval(interval);
