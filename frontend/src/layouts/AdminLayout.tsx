@@ -75,7 +75,7 @@ export function AdminLayout() {
             <img
               alt="VCF PRO"
               className="h-[50px] w-auto object-contain bg-transparent drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-all duration-300"
-              src="/logo.svg"
+              src="/logoo.jpg"
             />
           </Link>
         </div>

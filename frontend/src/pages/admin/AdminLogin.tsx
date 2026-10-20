@@ -38,7 +38,7 @@ export function AdminLogin() {
           <img
             alt="VCF PRO"
             className="h-[60px] w-auto object-contain bg-transparent mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-all duration-300"
-            src="/logo.svg"
+            src="/logoo.jpg"
           />
           <p className="text-ink/40 text-xs tracking-widest uppercase">Admin Login</p>
         </div>
