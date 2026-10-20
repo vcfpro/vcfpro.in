@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { getSettings, listPosts, saveSettings, submitContactMessage } from "../api/endpoints";
+import { getSettings, listPosts, prefetchPost, saveSettings, submitContactMessage } from "../api/endpoints";
 import { apiFetch } from "../api/client";
 import type { Post, PortfolioSettings } from "../api/types";
 
@@ -529,6 +529,8 @@ export function Home() {
                     key={post.id}
                     className="group/blogitem flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl border border-ink/5 bg-ink/10 hover:bg-black/20 hover:border-white/10 transition-all duration-300 pointer-events-auto"
                     to={`/post/${post.slug}`}
+                    onMouseEnter={() => prefetchPost(post.slug)}
+                    onFocus={() => prefetchPost(post.slug)}
                   >
                     <div className="flex-1 min-w-0">
                       <h4 className="text-[12.5px] font-medium text-ink truncate group-hover/blogitem:text-[var(--color-accent)] transition-colors">{post.title}</h4>

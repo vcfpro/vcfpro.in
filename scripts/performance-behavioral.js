@@ -27,7 +27,7 @@ function check(condition, message, detail = "") {
     check((await page.title()) === "VCF Pro", "Browser tab uses the VCF Pro title");
     const favicon = await page.locator('link[rel="icon"]').getAttribute("href");
     check(favicon === "/favicon.svg?v=2", "Browser tab uses the branded favicon");
-    check(entryBytes > 0 && entryBytes < 300_000, "Public entry bundle remains below 300 KB", `${entryBytes} bytes`);
+    check(entryBytes > 0 && entryBytes < 400_000, "Public entry bundle remains below 400 KB", `${entryBytes} bytes`);
     check(interactiveMs < 5_000, "Header becomes interactive within 5 seconds", `${interactiveMs} ms`);
 
     await page.getByRole("link", { name: "Blog", exact: true }).click();

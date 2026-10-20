@@ -1,7 +1,7 @@
 import { Menu, Moon, Search, Sun, User, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { listPosts } from "../../api/endpoints";
+import { listPosts, prefetchPost } from "../../api/endpoints";
 import type { Post } from "../../api/types";
 import { useTheme } from "../../theme/ThemeContext";
 
@@ -160,7 +160,7 @@ export function Header() {
                 : !terms.length ? <p className="p-4 text-sm text-ink/55">Search titles, topics, or article text.</p>
                 : results.length === 0 ? <p role="status" className="p-4 text-sm text-ink/60">No articles found for “{query.trim()}”.</p>
                 : results.map((post) => (
-                  <Link key={post.id} to={`/post/${post.slug}`} onClick={() => { setSearchOpen(false); setQuery(""); }} className="block rounded-xl p-4 text-ink transition-colors hover:bg-ink/10 focus:bg-ink/10">
+                  <Link key={post.id} to={`/post/${post.slug}`} onMouseEnter={() => prefetchPost(post.slug)} onFocus={() => prefetchPost(post.slug)} onClick={() => { setSearchOpen(false); setQuery(""); }} className="block rounded-xl p-4 text-ink transition-colors hover:bg-ink/10 focus:bg-ink/10">
                     <span className="text-xs uppercase tracking-widest text-[var(--color-accent)]">{post.category_name || "Article"}</span>
                     <span className="mt-1 block font-serif text-xl">{post.title}</span>
                     {post.excerpt && <span className="mt-2 block text-sm text-ink/55 line-clamp-2">{post.excerpt}</span>}

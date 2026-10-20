@@ -233,6 +233,14 @@ if (preg_match('/\/api\/(.*)$/i', $requestUri, $matches)) {
 
 $route = rtrim($route, '/');
 
+// Public content changes infrequently; let browsers reuse it across navigation.
+// Authenticated/admin responses and live counters remain uncached.
+if ($_SERVER['REQUEST_METHOD'] === 'GET' &&
+    empty($_SERVER['HTTP_AUTHORIZATION']) &&
+    ($route === 'settings' || $route === 'categories' || $route === 'posts' || preg_match('/^posts\/slug\//i', $route))) {
+    header('Cache-Control: public, max-age=60, stale-while-revalidate=300');
+}
+
 // Endpoint router logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $route === 'auth/login') {
     $input = json_decode(file_get_contents('php://input'), true);

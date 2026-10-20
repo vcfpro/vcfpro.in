@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { getOnlineCount, getSettings, listCategories, listPosts } from "../api/endpoints";
+import { getOnlineCount, getSettings, listCategories, listPosts, prefetchPost } from "../api/endpoints";
 import type { AdminProfileSettings, Category, Post } from "../api/types";
 
 /*
@@ -97,6 +97,8 @@ export function Blog() {
             <Link
               className="py-10 flex flex-col md:flex-row md:items-start gap-4 md:gap-12 glass-panel p-8 hover:border-[var(--color-accent)]/50 transition-colors duration-300 rounded-2xl"
               to={`/post/${post.slug}`}
+              onMouseEnter={() => prefetchPost(post.slug)}
+              onFocus={() => prefetchPost(post.slug)}
             >
               <div className="text-sm font-mono text-ink/40 md:w-32 flex-shrink-0 mt-1">
                 {formatDate(post.published_at || post.created_at)}

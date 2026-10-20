@@ -76,6 +76,10 @@ export function getPostBySlug(slug: string): Promise<Post> {
   return apiFetch(`/posts/slug/${slug}`);
 }
 
+export function prefetchPost(slug: string): void {
+  void getPostBySlug(slug).catch(() => {});
+}
+
 export function createPost(post: Partial<Post>): Promise<{ id: number }> {
   return apiFetch("/posts", { method: "POST", body: JSON.stringify(post) });
 }
