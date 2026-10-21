@@ -38,6 +38,12 @@ function check(condition, message, detail = "") {
     );
     check(cardStyles.length === 6, "All six glass homepage cards receive persistent dark surfaces");
     check(cardStyles.every(({ background, ink }) => background === "rgb(12, 12, 12)" && ink === "#f5f5f5"), "Homepage cards retain dark backgrounds in light mode", JSON.stringify(cardStyles));
+
+    const socialStyles = await page.locator(".home-social-pill").evaluateAll((items) =>
+      items.map((item) => ({ background: getComputedStyle(item).backgroundColor, color: getComputedStyle(item).color })),
+    );
+    check(socialStyles.length === 2, "Both hero social controls use persistent pills");
+    check(socialStyles.every(({ background, color }) => background === "rgb(5, 5, 5)" && color === "rgb(245, 245, 245)"), "Hero social controls remain black with white content in light mode", JSON.stringify(socialStyles));
   } finally {
     await browser.close();
   }
