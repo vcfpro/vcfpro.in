@@ -292,7 +292,7 @@ export function Home() {
             className="col-span-1 md:row-span-2 min-h-[400px] lg:min-h-[500px] relative group overflow-hidden rounded-2xl cursor-pointer"
           >
             {layoutControls("timeline")}
-            <div className="rounded-2xl glass-panel text-ink relative flex flex-col justify-between overflow-hidden p-6 md:p-8 h-full w-full shadow-2xl transition-all duration-300">
+            <div className="home-image-tile rounded-2xl glass-panel text-ink relative flex flex-col justify-between overflow-hidden p-6 md:p-8 h-full w-full shadow-2xl transition-all duration-300">
               {settings.bgVideo1 && (
                 <video src={settings.bgVideo1} autoPlay loop muted playsInline className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-screen" />
               )}
@@ -373,7 +373,7 @@ export function Home() {
             className="col-span-1 min-h-[225px] relative group overflow-hidden rounded-2xl cursor-pointer"
           >
             {layoutControls("software")}
-            <div className="rounded-2xl glass-panel text-ink relative flex flex-col justify-between overflow-hidden pt-6 h-full min-h-[225px] pb-4 transition-all duration-300 w-full">
+            <div className="home-image-tile rounded-2xl glass-panel text-ink relative flex flex-col justify-between overflow-hidden pt-6 h-full min-h-[225px] pb-4 transition-all duration-300 w-full">
               {settings.bgVideo3 && (
                 <video src={settings.bgVideo3} autoPlay loop muted playsInline className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
               )}

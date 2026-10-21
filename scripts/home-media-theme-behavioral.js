@@ -25,6 +25,12 @@ function check(condition, message, detail = "") {
     );
     check(lightStyles.every(({ blend }) => blend === "normal"), "Light-mode tile media avoids washout blending", JSON.stringify(lightStyles));
     check(lightStyles.every(({ opacity }) => Number(opacity) >= 0.9), "Light-mode tile media remains clearly visible");
+
+    const imageTileStyles = await page.locator(".home-image-tile").evaluateAll((items) =>
+      items.map((item) => ({ ink: getComputedStyle(item).getPropertyValue("--color-ink").trim(), bg: getComputedStyle(item).getPropertyValue("--color-bg").trim() })),
+    );
+    check(imageTileStyles.length === 2, "Only the Experience and software tiles receive image-card treatment");
+    check(imageTileStyles.every(({ ink, bg }) => ink === "#f5f5f5" && bg === "#050505"), "Light-mode image cards retain readable light-on-dark content", JSON.stringify(imageTileStyles));
   } finally {
     await browser.close();
   }
