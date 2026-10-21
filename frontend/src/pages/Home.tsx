@@ -281,7 +281,7 @@ export function Home() {
           </div>
         </motion.header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 flex-1 mt-4">
+        <div className="home-bento-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 flex-1 mt-4">
           {/* timeline */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

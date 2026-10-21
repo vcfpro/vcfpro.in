@@ -20,6 +20,7 @@ function check(condition, message, detail = "") {
     check(darkStyles.every(({ blend }) => blend === "screen"), "Dark-mode tile media retains screen blending", JSON.stringify(darkStyles));
 
     await page.getByTitle("Switch to Light Mode").click();
+    await page.waitForTimeout(400);
     const lightStyles = await page.locator(".home-tile-media").evaluateAll((items) =>
       items.map((item) => ({ blend: getComputedStyle(item).mixBlendMode, opacity: getComputedStyle(item).opacity })),
     );
@@ -31,6 +32,12 @@ function check(condition, message, detail = "") {
     );
     check(imageTileStyles.length === 2, "Only the Experience and software tiles receive image-card treatment");
     check(imageTileStyles.every(({ ink, bg }) => ink === "#f5f5f5" && bg === "#050505"), "Light-mode image cards retain readable light-on-dark content", JSON.stringify(imageTileStyles));
+
+    const cardStyles = await page.locator(".home-bento-grid .glass-panel").evaluateAll((items) =>
+      items.map((item) => ({ background: getComputedStyle(item).backgroundColor, ink: getComputedStyle(item).getPropertyValue("--color-ink").trim() })),
+    );
+    check(cardStyles.length === 6, "All six glass homepage cards receive persistent dark surfaces");
+    check(cardStyles.every(({ background, ink }) => background === "rgb(12, 12, 12)" && ink === "#f5f5f5"), "Homepage cards retain dark backgrounds in light mode", JSON.stringify(cardStyles));
   } finally {
     await browser.close();
   }
