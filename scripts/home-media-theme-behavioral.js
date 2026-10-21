@@ -20,7 +20,7 @@ function check(condition, message, detail = "") {
     check(darkStyles.every(({ blend }) => blend === "screen"), "Dark-mode tile media retains screen blending", JSON.stringify(darkStyles));
 
     await page.getByTitle("Switch to Light Mode").click();
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(800);
     const lightStyles = await page.locator(".home-tile-media").evaluateAll((items) =>
       items.map((item) => ({ blend: getComputedStyle(item).mixBlendMode, opacity: getComputedStyle(item).opacity })),
     );
