@@ -231,7 +231,7 @@ export function PostDetail() {
         className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 to-[var(--color-accent)] origin-left z-[60]"
         style={{ transform: `scaleX(${progress})` }}
       />
-      <article className="max-w-3xl mx-auto px-6 mt-12 py-12 md:py-16 glass-panel border-x-0 md:border-x rounded-none md:rounded-2xl shadow-2xl relative">
+      <article className="w-full max-w-6xl mx-auto px-6 md:px-10 lg:px-14 mt-12 py-12 md:py-16 glass-panel border-x-0 md:border-x rounded-none md:rounded-2xl shadow-2xl relative">
         <div className="absolute top-0 right-0 -mr-20 w-64 h-64 bg-[var(--color-accent)]/10 rounded-full blur-[100px] pointer-events-none" />
         <Link className="text-[10px] uppercase tracking-widest text-[var(--color-accent)] font-bold hover:text-ink transition-colors mb-12 inline-block" to="/blog">
           ← Back to Archive

@@ -30,9 +30,10 @@ async function openPost(page, slug) {
   const bounds = await page.locator("article").evaluate((article) => {
     const articleBox = article.getBoundingClientRect();
     const imageBox = article.querySelector("figure img").getBoundingClientRect();
-    return { articleLeft: articleBox.left, articleRight: articleBox.right, imageLeft: imageBox.left, imageRight: imageBox.right };
+    return { articleLeft: articleBox.left, articleRight: articleBox.right, articleWidth: articleBox.width, imageLeft: imageBox.left, imageRight: imageBox.right };
   });
   assert(bounds.imageLeft >= bounds.articleLeft && bounds.imageRight <= bounds.articleRight, "Featured image stays inside the article", JSON.stringify(bounds));
+  assert(bounds.articleWidth >= 1100, "Public article uses the wider desktop layout", `${bounds.articleWidth}px`);
 
   const featuredSrc = await page.locator("figure img").getAttribute("src");
   const bodyBounds = await page.locator(".article-prose").evaluate(async (container, src) => {
