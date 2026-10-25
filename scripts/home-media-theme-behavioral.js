@@ -14,6 +14,9 @@ function check(condition, message, detail = "") {
     await page.goto(base, { waitUntil: "domcontentloaded" });
     await page.locator(".home-tile-media").first().waitFor();
 
+    const descriptionWhiteSpace = await page.locator(".home-description").evaluate((item) => getComputedStyle(item).whiteSpace);
+    check(descriptionWhiteSpace === "pre-wrap", "Homepage description preserves entered line breaks and pointer spacing");
+
     const darkStyles = await page.locator(".home-tile-media").evaluateAll((items) =>
       items.map((item) => ({ blend: getComputedStyle(item).mixBlendMode, opacity: getComputedStyle(item).opacity })),
     );

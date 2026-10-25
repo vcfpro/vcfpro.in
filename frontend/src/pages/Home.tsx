@@ -243,7 +243,7 @@ export function Home() {
             <h1 className="text-[28px] sm:text-3xl md:text-4xl lg:text-[44px] leading-[1.15] tracking-tight font-normal mb-4">
               {settings.headerGreeting}
             </h1>
-            <p className="text-sm md:text-[15px] leading-[1.6] opacity-60 mb-6">{settings.headerDescription}</p>
+            <p className="home-description whitespace-pre-wrap text-sm md:text-[15px] leading-[1.6] opacity-60 mb-6">{settings.headerDescription}</p>
             <div className="flex items-center gap-4">
               <Link className="relative group block" to="/blog">
                 <div className="absolute -inset-1 rounded-full bg-[var(--color-accent)] opacity-0 group-hover:opacity-40 blur-lg transition-opacity duration-500" />
