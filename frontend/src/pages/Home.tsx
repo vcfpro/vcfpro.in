@@ -239,7 +239,7 @@ export function Home() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="flex flex-col lg:flex-row items-center lg:items-center justify-between gap-8 relative z-10 shrink-0"
         >
-          <div className="flex-1 max-w-4xl order-2 lg:order-1">
+          <div className="home-hero-copy min-w-0 flex-1 order-2 lg:order-1">
             <h1 className="text-[28px] sm:text-3xl md:text-4xl lg:text-[44px] leading-[1.15] tracking-tight font-normal mb-4">
               {settings.headerGreeting}
             </h1>
@@ -269,7 +269,7 @@ export function Home() {
               )}
             </div>
           </div>
-          <div className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[360px] aspect-square order-1 lg:order-2 self-center shrink-0">
+          <div className="home-hero-image relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[360px] aspect-square order-1 lg:order-2 self-center shrink-0">
             <div className="absolute inset-0 rounded-full bg-indigo-500/10 blur-3xl -z-10 animate-pulse duration-5000" />
             <img
               alt="VCF Principal Architect"

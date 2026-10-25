@@ -10,12 +10,18 @@ function check(condition, message, detail = "") {
 (async () => {
   const browser = await chromium.launch({ headless: true });
   try {
-    const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+    const page = await browser.newPage({ viewport: { width: 1600, height: 1000 } });
     await page.goto(base, { waitUntil: "domcontentloaded" });
     await page.locator(".home-tile-media").first().waitFor();
 
     const descriptionWhiteSpace = await page.locator(".home-description").evaluate((item) => getComputedStyle(item).whiteSpace);
     check(descriptionWhiteSpace === "pre-wrap", "Homepage description preserves entered line breaks and pointer spacing");
+    const heroGap = await page.locator(".home-hero-copy").evaluate((copy) => {
+      const copyBox = copy.getBoundingClientRect();
+      const imageBox = document.querySelector(".home-hero-image").getBoundingClientRect();
+      return Math.round(imageBox.left - copyBox.right);
+    });
+    check(heroGap <= 40, "Homepage copy expands to the portrait column", `${heroGap}px gap`);
 
     const darkStyles = await page.locator(".home-tile-media").evaluateAll((items) =>
       items.map((item) => ({ blend: getComputedStyle(item).mixBlendMode, opacity: getComputedStyle(item).opacity })),
