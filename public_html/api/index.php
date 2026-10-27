@@ -237,7 +237,10 @@ $route = rtrim($route, '/');
 // Authenticated/admin responses and live counters remain uncached.
 if ($_SERVER['REQUEST_METHOD'] === 'GET' &&
     empty($_SERVER['HTTP_AUTHORIZATION']) &&
-    ($route === 'settings' || $route === 'categories' || $route === 'posts' || preg_match('/^posts\/slug\//i', $route))) {
+    ($route === 'settings' ||
+     $route === 'categories' ||
+     ($route === 'posts' && (!isset($_GET['status']) || $_GET['status'] === 'published')) ||
+     preg_match('/^posts\/slug\//i', $route))) {
     header('Cache-Control: public, max-age=60, stale-while-revalidate=300');
 }
 
@@ -360,6 +363,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $route === 'auth/logout') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $route === 'auth/me') {
     $user = authenticate();
     echo json_encode(['user' => $user]);
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $route === 'admin/dashboard') {
+    authenticate();
+
+    try {
+        $posts = $pdo->query("SELECT p.*, c.name AS category_name, c.slug AS category_slug
+                              FROM posts p
+                              LEFT JOIN categories c ON p.category_id = c.id
+                              ORDER BY p.created_at DESC")->fetchAll();
+        foreach ($posts as &$post) {
+            $post['id'] = (int)$post['id'];
+            if ($post['category_id'] !== null) {
+                $post['category_id'] = (int)$post['category_id'];
+            }
+        }
+
+        $messages = $pdo->query("SELECT * FROM contact_messages ORDER BY created_at DESC")->fetchAll();
+
+        $comments = $pdo->query("SELECT c.*, p.title AS post_title
+                                 FROM comments c
+                                 LEFT JOIN posts p ON c.post_id = p.id
+                                 ORDER BY c.created_at DESC")->fetchAll();
+        foreach ($comments as &$comment) {
+            $comment['id'] = (int)$comment['id'];
+            $comment['post_id'] = (int)$comment['post_id'];
+        }
+
+        $categories = $pdo->query("SELECT * FROM categories ORDER BY name ASC")->fetchAll();
+        foreach ($categories as &$category) {
+            $category['id'] = (int)$category['id'];
+        }
+
+        $threshold = (time() * 1000) - 130000;
+        $onlineCount = (int)$pdo->query("SELECT COUNT(*) FROM active_visitors WHERE last_ping > $threshold")->fetchColumn();
+
+        echo json_encode([
+            'posts' => $posts,
+            'messages' => $messages,
+            'comments' => $comments,
+            'categories' => $categories,
+            'onlineCount' => max(1, $onlineCount),
+        ]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to load dashboard']);
+    }
     exit;
 }
 

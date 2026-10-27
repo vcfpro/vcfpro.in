@@ -8,6 +8,7 @@ import {
   deleteCommentAsAdmin,
   deleteContactMessage,
   deletePost,
+  getAdminDashboard,
   listAllComments,
   listCategories,
   listContactMessages,
@@ -98,10 +99,20 @@ export function Dashboard() {
   }
 
   useEffect(() => {
-    fetchPosts();
-    fetchMessages();
-    fetchCategories();
-    fetchComments();
+    getAdminDashboard()
+      .then((data) => {
+        setPosts(data.posts);
+        setMessages(data.messages);
+        setComments(data.comments);
+        setCategories(data.categories);
+        setActiveReaders(data.onlineCount);
+      })
+      .catch(console.error)
+      .finally(() => {
+        setMessagesLoading(false);
+        setCommentsLoading(false);
+        setCategoriesLoading(false);
+      });
     function pollOnline() {
       apiFetch<{ count: number }>("/stats/online")
         .then((r) => {

@@ -25,6 +25,18 @@ export function getMe(): Promise<{ user: User }> {
   return apiFetch("/auth/me");
 }
 
+export interface AdminDashboardData {
+  posts: Post[];
+  messages: ContactMessage[];
+  comments: Comment[];
+  categories: Category[];
+  onlineCount: number;
+}
+
+export function getAdminDashboard(): Promise<AdminDashboardData> {
+  return apiFetch("/admin/dashboard");
+}
+
 /** Kept for API-surface completeness only - disabled server-side (403,
  * "Registration is disabled") since the Fix 2 security session. The live
  * bundle has a corresponding "Register account" code path with no reachable
