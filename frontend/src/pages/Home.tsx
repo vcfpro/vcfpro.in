@@ -62,6 +62,34 @@ function SparkleIcon({ className }: { className?: string }) {
   return <Sparkles className={className || "w-3 h-3"} strokeWidth={1.5} aria-hidden="true" />;
 }
 
+function DeferredBackgroundVideo({ src, delay, className }: { src: string; delay: number; className: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        timer = setTimeout(() => setActive(true), delay);
+      },
+      { rootMargin: "50px" },
+    );
+    observer.observe(video);
+
+    return () => {
+      observer.disconnect();
+      if (timer) clearTimeout(timer);
+    };
+  }, [delay]);
+
+  return <video ref={videoRef} src={active ? src : undefined} autoPlay={active} loop muted playsInline preload="none" aria-hidden="true" className={className} />;
+}
+
 // Lucide dropped its brand/logo icons (trademark reasons) somewhere before
 // the installed version (1.41.0) - Figma/Framer/Chromium all 404 from the
 // package now. Reproduced directly from the exact paths captured in the
@@ -294,7 +322,7 @@ export function Home() {
             {layoutControls("timeline")}
             <div className="home-image-tile rounded-2xl glass-panel text-ink relative flex flex-col justify-between overflow-hidden p-6 md:p-8 h-full w-full shadow-2xl transition-all duration-300">
               {settings.bgVideo1 && (
-                <video src={settings.bgVideo1} autoPlay loop muted playsInline className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-screen" />
+                <DeferredBackgroundVideo src={settings.bgVideo1} delay={500} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-screen" />
               )}
               <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-bg via-bg/80 to-transparent" />
               <div className="relative z-10 flex items-center justify-center gap-3">
@@ -354,7 +382,7 @@ export function Home() {
             {layoutControls("stats")}
             <div className="rounded-2xl glass-panel text-ink relative flex flex-col justify-center items-center overflow-hidden h-full min-h-[220px] w-full transition-all duration-300">
               {settings.bgVideo2 && (
-                <video src={settings.bgVideo2} autoPlay loop muted playsInline className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
+                <DeferredBackgroundVideo src={settings.bgVideo2} delay={1500} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
               )}
               <div className="relative z-10 text-center">
                 <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-light tracking-tight drop-shadow-2xl text-ink">{settings.statsLabel}</h2>
@@ -375,7 +403,7 @@ export function Home() {
             {layoutControls("software")}
             <div className="home-image-tile rounded-2xl glass-panel text-ink relative flex flex-col justify-between overflow-hidden pt-6 h-full min-h-[225px] pb-4 transition-all duration-300 w-full">
               {settings.bgVideo3 && (
-                <video src={settings.bgVideo3} autoPlay loop muted playsInline className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
+                <DeferredBackgroundVideo src={settings.bgVideo3} delay={2500} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
               )}
               <div className="relative z-10 flex items-center justify-center gap-3 px-6 pb-4">
                 <span className="text-[11px] uppercase tracking-[0.22em] text-ink/70 font-semibold text-center w-full block">{settings.softwareLabel}</span>
