@@ -227,7 +227,7 @@ export function Home() {
 
   if (!settings) return null;
 
-  const recentPosts = posts.slice(0, 3);
+  const recentPosts = posts.slice(0, 5);
   const wordCount = message.trim().split(/\s+/).filter(Boolean).length;
 
   return (
