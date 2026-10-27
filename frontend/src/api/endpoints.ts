@@ -119,6 +119,12 @@ export function dislikePost(id: number) {
   });
 }
 
+export function recordPostView(id: number) {
+  return apiFetch<{ success: boolean; views: number }>(`/posts/${id}/view`, {
+    method: "POST",
+  });
+}
+
 // --- comments ---
 
 /** Matches the original exactly: a random id generated once per browser and

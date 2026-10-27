@@ -1,4 +1,4 @@
-import { Award, BookOpen, Pen, Plus, ThumbsDown, ThumbsUp, Trash2, Users } from "lucide-react";
+import { Award, BookOpen, Eye, Pen, Plus, ThumbsDown, ThumbsUp, Trash2, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch } from "../../api/client";
@@ -280,6 +280,7 @@ export function Dashboard() {
               <tr>
                 <th className="px-6 py-4 text-xs tracking-widest uppercase text-ink/50 font-medium">Title</th>
                 <th className="px-6 py-4 text-xs tracking-widest uppercase text-ink/50 font-medium">Status</th>
+                <th className="px-6 py-4 text-xs tracking-widest uppercase text-ink/50 font-medium">Views</th>
                 <th className="px-6 py-4 text-xs tracking-widest uppercase text-ink/50 font-medium">Date</th>
                 <th className="px-6 py-4 text-xs tracking-widest uppercase text-ink/50 font-medium text-right">Actions</th>
               </tr>
@@ -294,6 +295,12 @@ export function Dashboard() {
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium tracking-wide ${post.status === "published" ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"}`}>
                       {post.status.toUpperCase()}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="inline-flex items-center gap-1.5 text-sm text-ink/60 font-mono">
+                      <Eye size={14} />
+                      {(post.views || 0).toLocaleString()}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-ink/50 font-mono">{new Date(post.created_at).toLocaleDateString()}</td>

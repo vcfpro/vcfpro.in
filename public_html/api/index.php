@@ -538,6 +538,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && preg_match('/^posts\/([0-9]+)\/disl
     exit;
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && preg_match('/^posts\/([0-9]+)\/view$/i', $route, $matches)) {
+    $id = (int)$matches[1];
+
+    try {
+        $stmt = $pdo->prepare("UPDATE posts SET views = COALESCE(views, 0) + 1 WHERE id = ? AND status = 'published'");
+        $stmt->execute([$id]);
+    } catch (PDOException $e) {
+        // Existing installations predate view tracking; migrate lazily on
+        // the first article view without requiring cPanel database access.
+        if (stripos($e->getMessage(), 'no such column') === false) {
+            throw $e;
+        }
+        try {
+            $pdo->exec("ALTER TABLE posts ADD COLUMN views INTEGER NOT NULL DEFAULT 0");
+        } catch (PDOException $migrationError) {
+            if (stripos($migrationError->getMessage(), 'duplicate column') === false) {
+                throw $migrationError;
+            }
+        }
+        $stmt = $pdo->prepare("UPDATE posts SET views = COALESCE(views, 0) + 1 WHERE id = ? AND status = 'published'");
+        $stmt->execute([$id]);
+    }
+
+    if ($stmt->rowCount() === 0) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Published post not found']);
+        exit;
+    }
+
+    $count = $pdo->prepare("SELECT views FROM posts WHERE id = ?");
+    $count->execute([$id]);
+    echo json_encode(['success' => true, 'views' => (int)$count->fetchColumn()]);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $route === 'comments/all') {
     authenticate();
     try {

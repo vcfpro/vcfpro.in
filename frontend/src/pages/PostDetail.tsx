@@ -13,6 +13,7 @@ import {
   likePost,
   listPosts,
   postComment,
+  recordPostView,
 } from "../api/endpoints";
 import type { AdminProfileSettings, Comment, Post } from "../api/types";
 import { CommentEditor } from "../components/post/CommentEditor";
@@ -104,6 +105,12 @@ export function PostDetail() {
         setPost(p);
         setLikes(p.likes || 0);
         setDislikes(p.dislikes || 0);
+        const viewKey = `vcfpro_viewed_post_${p.id}`;
+        if (!sessionStorage.getItem(viewKey)) {
+          recordPostView(p.id)
+            .then(() => sessionStorage.setItem(viewKey, "1"))
+            .catch(() => {});
+        }
         getPostComments(p.id).then(setComments).catch(console.error);
         listPosts()
           .then((all) => {

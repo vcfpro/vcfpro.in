@@ -15,6 +15,7 @@ export interface Post {
   url: string | null;
   likes: number;
   dislikes: number;
+  views?: number;
   created_at: string;
   published_at: string | null;
 }
