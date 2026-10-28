@@ -90,6 +90,36 @@ function DeferredBackgroundVideo({ src, delay, className }: { src: string; delay
   return <video ref={videoRef} src={active ? src : undefined} autoPlay={active} loop muted playsInline preload="none" aria-hidden="true" className={className} />;
 }
 
+const INTRO_SECTION_HEADINGS = ["Why I Created vcfpro.in", "How This Blog Will Help VCF Admins and Consultants"];
+const INTRO_LEAD_INS = ["Real-World Troubleshooting:", "Deployment & Migration Guidance:", "Operational Best Practices:", "Time-Saving Tips:"];
+
+function FormattedIntroduction({ text }: { text: string }) {
+  return (
+    <div className="home-description text-sm md:text-[15px] leading-[1.65] text-ink/80 mb-6">
+      {text.split(/\r?\n/).map((line, index) => {
+        const trimmed = line.trim();
+        if (!trimmed) return <div key={index} className="h-4" aria-hidden="true" />;
+
+        if (INTRO_SECTION_HEADINGS.includes(trimmed)) {
+          return (
+            <h2 key={index} className="mt-2 mb-1 text-base md:text-[17px] font-bold text-ink tracking-tight">
+              {trimmed}
+            </h2>
+          );
+        }
+
+        const leadIn = INTRO_LEAD_INS.find((label) => trimmed.startsWith(label));
+        return (
+          <p key={index} className="mb-1.5">
+            {leadIn && <strong className="font-bold text-ink">{leadIn}</strong>}
+            {leadIn ? trimmed.slice(leadIn.length) : line}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
 // Lucide dropped its brand/logo icons (trademark reasons) somewhere before
 // the installed version (1.41.0) - Figma/Framer/Chromium all 404 from the
 // package now. Reproduced directly from the exact paths captured in the
@@ -271,7 +301,7 @@ export function Home() {
             <h1 className="text-[28px] sm:text-3xl md:text-4xl lg:text-[44px] leading-[1.15] tracking-tight font-normal mb-4">
               {settings.headerGreeting}
             </h1>
-            <p className="home-description whitespace-pre-wrap text-sm md:text-[15px] leading-[1.6] opacity-60 mb-6">{settings.headerDescription}</p>
+            <FormattedIntroduction text={settings.headerDescription} />
             <div className="flex items-center gap-4">
               <Link className="relative group block" to="/blog">
                 <div className="absolute -inset-1 rounded-full bg-[var(--color-accent)] opacity-0 group-hover:opacity-40 blur-lg transition-opacity duration-500" />
