@@ -121,7 +121,7 @@ export function Dashboard() {
         .catch(() => {});
     }
     pollOnline();
-    const interval = setInterval(pollOnline, 10000);
+    const interval = setInterval(pollOnline, 60000);
     return () => clearInterval(interval);
   }, []);
 

@@ -5,7 +5,6 @@ import {
   deleteOwnComment,
   editComment,
   getAuthorKey,
-  getOnlineCount,
   getPostBySlug,
   getPostComments,
   getSettings,
@@ -88,7 +87,6 @@ export function PostDetail() {
   const [hasVoted, setHasVoted] = useState(false);
   const [articleCount, setArticleCount] = useState(5);
   const [serverLatency, setServerLatency] = useState(34);
-  const [onlineCount, setOnlineCount] = useState(1);
   const [author, setAuthor] = useState<AdminProfileSettings | null>(null);
   const [displayName, setDisplayName] = useState("");
   const [commentContent, setCommentContent] = useState("");
@@ -127,23 +125,6 @@ export function PostDetail() {
     getSettings()
       .then((s) => setAuthor(s.adminProfile))
       .catch(() => {});
-  }, []);
-
-  // "Live Traffic" - independent 10s poller, matches the pattern already
-  // documented for Home/Dashboard tiles (capture/interactions.md).
-  useEffect(() => {
-    let cancelled = false;
-    function fetchOnline() {
-      getOnlineCount()
-        .then(({ count }) => !cancelled && typeof count === "number" && setOnlineCount(count))
-        .catch(() => {});
-    }
-    fetchOnline();
-    const interval = setInterval(fetchOnline, 60000);
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
   }, []);
 
   // Reading progress bar.
@@ -310,7 +291,7 @@ export function PostDetail() {
               <span className="text-[9px] uppercase tracking-wider text-ink/40">Live Traffic</span>
               <span className="text-sm text-green-500 dark:text-green-400 font-bold flex items-center gap-1.5 justify-center">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                {onlineCount} Online
+                1 Online
               </span>
               <span className="text-[9px] text-ink/30">active screen streams</span>
             </div>

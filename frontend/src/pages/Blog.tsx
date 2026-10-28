@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { getOnlineCount, getSettings, listCategories, listPosts, prefetchPost } from "../api/endpoints";
+import { getSettings, listCategories, listPosts, prefetchPost } from "../api/endpoints";
 import type { AdminProfileSettings, Category, Post } from "../api/types";
 
 /*
@@ -31,7 +31,6 @@ export function Blog() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [author, setAuthor] = useState<AdminProfileSettings | null>(null);
-  const [onlineCount, setOnlineCount] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,9 +38,6 @@ export function Blog() {
     listCategories().then(setCategories).catch(() => {});
     getSettings()
       .then((s) => setAuthor(s.adminProfile))
-      .catch(() => {});
-    getOnlineCount()
-      .then(({ count }) => setOnlineCount(count))
       .catch(() => {});
   }, []);
 
@@ -59,7 +55,7 @@ export function Blog() {
       <div className="flex justify-center flex-col items-center gap-2 mb-12">
         <span className="text-[10px] text-green-400 font-bold flex items-center gap-1.5 uppercase tracking-widest border border-green-500/20 bg-green-500/10 px-3 py-1 rounded-full">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-          {onlineCount} Reader{onlineCount !== 1 ? "s" : ""} Online
+          1 Reader Online
         </span>
       </div>
 

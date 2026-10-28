@@ -21,7 +21,7 @@ import {
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { getSettings, listPosts, prefetchPost, saveSettings, submitContactMessage } from "../api/endpoints";
-import { apiFetch } from "../api/client";
+import { apiFetch, getToken } from "../api/client";
 import type { Post, PortfolioSettings } from "../api/types";
 
 const DEFAULT_TILE_ORDER = ["accolades", "timeline", "software", "philosophy", "blogs", "contact", "stats"];
@@ -194,7 +194,9 @@ export function Home() {
     listPosts()
       .then((all) => setPosts(all.filter((p) => p.status === "published")))
       .catch(() => {});
-    apiFetch("/auth/me").then(() => setIsAdmin(true)).catch(() => setIsAdmin(false));
+    if (getToken()) {
+      apiFetch("/auth/me").then(() => setIsAdmin(true)).catch(() => setIsAdmin(false));
+    }
   }, []);
 
   useEffect(() => {

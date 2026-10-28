@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getOnlineCount, listPosts, pingStats } from "../../api/endpoints";
+import { listPosts } from "../../api/endpoints";
 
 /*
  * Reconstructed from capture/dom/home-desktop.html and capture/dom/blog-
@@ -22,33 +22,8 @@ import { getOnlineCount, listPosts, pingStats } from "../../api/endpoints";
  * behaviour, redundant as that is - see capture/interactions.md).
  */
 export function Footer() {
-  const [onlineCount, setOnlineCount] = useState(1);
   const [articleCount, setArticleCount] = useState<number | null>(null);
   const [curationRating, setCurationRating] = useState("10.0");
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchOnline() {
-      try {
-        const { count } = await getOnlineCount();
-        if (!cancelled && typeof count === "number") setOnlineCount(count);
-      } catch {
-        /* keep last known value, matches original's silent catch */
-      }
-    }
-
-    pingStats();
-    fetchOnline();
-    const pingInterval = setInterval(pingStats, 60000);
-    const onlineInterval = setInterval(fetchOnline, 60000);
-
-    return () => {
-      cancelled = true;
-      clearInterval(pingInterval);
-      clearInterval(onlineInterval);
-    };
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -73,7 +48,7 @@ export function Footer() {
       <div className="flex gap-8 md:gap-12">
         <div>
           <div className="text-[9px] text-ink/30 uppercase tracking-widest mb-1">Readers Online</div>
-          <div className="text-lg font-mono tracking-tighter text-white">{onlineCount}</div>
+          <div className="text-lg font-mono tracking-tighter text-white">1</div>
         </div>
         <div>
           <div className="text-[9px] text-white/30 uppercase tracking-widest mb-1">Articles Published</div>

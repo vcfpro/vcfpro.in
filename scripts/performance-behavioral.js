@@ -43,8 +43,10 @@ function check(condition, message, detail = "") {
 
     const postsRequests = apiRequests.filter((path) => path === "/api/posts").length;
     const settingsRequests = apiRequests.filter((path) => path === "/api/settings").length;
+    const processHeavyRequests = apiRequests.filter((path) => path === "/api/auth/me" || path === "/api/stats/ping" || path === "/api/stats/online");
     check(postsRequests === 1, "Public navigation reuses the posts response", `${postsRequests} request; ${apiRequests.join(", ")}`);
     check(settingsRequests === 1, "Public navigation reuses the settings response", `${settingsRequests} request`);
+    check(processHeavyRequests.length === 0, "Anonymous navigation avoids authentication and live-stat PHP processes");
   } finally {
     await browser.close();
   }
