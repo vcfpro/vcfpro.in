@@ -3,6 +3,7 @@ import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import { TextStyle } from "@tiptap/extension-text-style";
+import { TableKit } from "@tiptap/extension-table";
 import Underline from "@tiptap/extension-underline";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 import StarterKit from "@tiptap/starter-kit";
@@ -15,7 +16,7 @@ import powershell from "highlight.js/lib/languages/powershell";
 import python from "highlight.js/lib/languages/python";
 import sql from "highlight.js/lib/languages/sql";
 import yaml from "highlight.js/lib/languages/yaml";
-import { Code2, Highlighter, Image as ImageIcon, Link2, Redo2, RemoveFormatting, Smile, Undo2 } from "lucide-react";
+import { Code2, Highlighter, Image as ImageIcon, Link2, Redo2, RemoveFormatting, Smile, Table2, Undo2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 interface RichTextEditorProps {
@@ -88,8 +89,8 @@ function sanitizeHtml(html: string): string {
   const root = doc.body.firstElementChild as HTMLElement | null;
   if (!root) return html;
 
-  const allowed = new Set(["p", "br", "strong", "em", "u", "s", "span", "a", "ul", "ol", "li", "blockquote", "pre", "code", "h1", "h2", "h3", "hr", "img", "div"]);
-  const allowedAttrs = new Set(["href", "target", "rel", "src", "alt", "style", "data-language"]);
+  const allowed = new Set(["p", "br", "strong", "em", "u", "s", "span", "a", "ul", "ol", "li", "blockquote", "pre", "code", "h1", "h2", "h3", "hr", "img", "div", "table", "thead", "tbody", "tfoot", "tr", "th", "td", "colgroup", "col"]);
+  const allowedAttrs = new Set(["href", "target", "rel", "src", "alt", "style", "data-language", "colspan", "rowspan", "colwidth"]);
 
   const walk = (parent: Element) => {
     [...parent.children].forEach((child) => {
@@ -117,6 +118,7 @@ export function RichTextEditor({ value, onChange, placeholder, minHeight = "500p
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [showLink, setShowLink] = useState(false);
+  const [showTableMenu, setShowTableMenu] = useState(false);
   const [linkValue, setLinkValue] = useState("");
   const [textColor, setTextColor] = useState("#f97316");
   const [highlightColor, setHighlightColor] = useState("#fde047");
@@ -132,6 +134,7 @@ export function RichTextEditor({ value, onChange, placeholder, minHeight = "500p
       Link.configure({ autolink: true, openOnClick: false, defaultProtocol: "https", HTMLAttributes: { rel: "noopener noreferrer" } }),
       Image.configure({ inline: false, allowBase64: false }),
       CodeBlockLowlight.configure({ lowlight }),
+      TableKit.configure({ table: { resizable: true, lastColumnResizable: false } }),
     ],
     [],
   );
@@ -250,6 +253,35 @@ export function RichTextEditor({ value, onChange, placeholder, minHeight = "500p
           {CODE_LANGUAGES.map((lang) => <option key={lang.value} value={lang.value}>{lang.label}</option>)}
         </select>
         <button type="button" title="Horizontal Rule" onClick={() => editor.chain().focus().setHorizontalRule().run()} className="p-1 px-1.5 hover:bg-[#000000]/10 dark:hover:bg-neutral-800 rounded text-ink/75 hover:text-ink transition-colors cursor-pointer">HR</button>
+        <div className="relative">
+          <button
+            type="button"
+            title="Table tools"
+            aria-expanded={showTableMenu}
+            onClick={() => setShowTableMenu((visible) => !visible)}
+            className="p-1 px-1.5 hover:bg-[#000000]/10 dark:hover:bg-neutral-800 rounded transition-colors cursor-pointer flex items-center gap-1"
+          >
+            <Table2 size={14} /><span className="text-[10px] uppercase font-semibold tracking-wide">Table</span>
+          </button>
+          {showTableMenu && (
+            <div className="table-tools-menu absolute top-full right-0 mt-2 z-[70] w-52 rounded-lg border border-card-border bg-[var(--editor-bg)] p-1.5 shadow-2xl">
+              <button type="button" onClick={() => { editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(); setShowTableMenu(false); }}>Insert 3 x 3 table</button>
+              <div className="table-tools-divider" />
+              <button type="button" disabled={!editor.can().addRowBefore()} onClick={() => editor.chain().focus().addRowBefore().run()}>Add row above</button>
+              <button type="button" disabled={!editor.can().addRowAfter()} onClick={() => editor.chain().focus().addRowAfter().run()}>Add row below</button>
+              <button type="button" disabled={!editor.can().deleteRow()} onClick={() => editor.chain().focus().deleteRow().run()}>Delete row</button>
+              <div className="table-tools-divider" />
+              <button type="button" disabled={!editor.can().addColumnBefore()} onClick={() => editor.chain().focus().addColumnBefore().run()}>Add column left</button>
+              <button type="button" disabled={!editor.can().addColumnAfter()} onClick={() => editor.chain().focus().addColumnAfter().run()}>Add column right</button>
+              <button type="button" disabled={!editor.can().deleteColumn()} onClick={() => editor.chain().focus().deleteColumn().run()}>Delete column</button>
+              <div className="table-tools-divider" />
+              <button type="button" disabled={!editor.can().toggleHeaderRow()} onClick={() => editor.chain().focus().toggleHeaderRow().run()}>Toggle header row</button>
+              <button type="button" disabled={!editor.can().mergeCells()} onClick={() => editor.chain().focus().mergeCells().run()}>Merge selected cells</button>
+              <button type="button" disabled={!editor.can().splitCell()} onClick={() => editor.chain().focus().splitCell().run()}>Split cell</button>
+              <button type="button" className="table-tools-danger" disabled={!editor.can().deleteTable()} onClick={() => { editor.chain().focus().deleteTable().run(); setShowTableMenu(false); }}>Delete table</button>
+            </div>
+          )}
+        </div>
         <div className="w-[1px] h-4 bg-card-border mx-1" />
         <button type="button" title="Insert Emoji" onClick={() => editor.chain().focus().insertContent(POPULAR_EMOJIS[0]).run()} className="p-1 px-1.5 rounded transition-colors cursor-pointer text-ink/75 hover:bg-[#000000]/10 dark:hover:bg-neutral-800 hover:text-ink"><Smile size={13} /></button>
         <button type="button" title="Attach Photo" disabled={uploading} onClick={() => fileInputRef.current?.click()} className="p-1 px-1.5 hover:bg-[#000000]/10 dark:hover:bg-neutral-800 rounded text-ink/75 hover:text-ink transition-colors cursor-pointer flex items-center gap-1 text-[10px] uppercase font-semibold tracking-wider opacity-85 disabled:opacity-50"><ImageIcon size={13} /><span>{uploading ? "Uploading..." : "Photo"}</span></button>

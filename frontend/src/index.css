@@ -332,6 +332,83 @@ html.light .home-bento-grid .glass-panel {
   color: color-mix(in srgb, var(--color-ink) 60%, transparent);
   opacity: 1;
 }
+.table-tools-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.35rem;
+  text-align: left;
+  color: color-mix(in srgb, var(--editor-ink, var(--color-ink)) 88%, transparent);
+  font-size: 0.72rem;
+}
+.table-tools-menu button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--editor-ink, var(--color-ink)) 10%, transparent);
+  color: var(--editor-ink, var(--color-ink));
+}
+.table-tools-menu button:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+.table-tools-menu .table-tools-danger {
+  color: #f87171;
+}
+.table-tools-divider {
+  height: 1px;
+  margin: 0.3rem 0;
+  background: var(--color-card-border);
+}
+.prose .tableWrapper {
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+.prose table {
+  width: 100%;
+  margin: 1.25rem 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.prose .tableWrapper table {
+  margin: 0;
+}
+.prose :where(th, td) {
+  min-width: 90px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 24%, transparent);
+  color: var(--color-muted);
+  text-align: left;
+  vertical-align: top;
+}
+.prose :where(th) {
+  background: color-mix(in srgb, var(--color-ink) 9%, transparent);
+  color: var(--color-ink);
+  font-weight: 700;
+}
+.tiptap-editor.prose :where(th, td) {
+  color: color-mix(in srgb, var(--editor-ink, var(--color-ink)) 90%, transparent);
+}
+.tiptap-editor.prose :where(th) {
+  color: var(--editor-ink, var(--color-ink));
+}
+.tiptap-editor .selectedCell {
+  position: relative;
+}
+.tiptap-editor .selectedCell::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  content: "";
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+.tiptap-editor .column-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: -2px;
+  width: 4px;
+  pointer-events: none;
+  background: var(--color-accent);
+}
 .prose :where(h1) {
   font-size: 28.8px;
   line-height: 1.5;
