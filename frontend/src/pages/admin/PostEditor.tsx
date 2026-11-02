@@ -153,7 +153,7 @@ export function PostEditor() {
           required
           value={form.title}
           onChange={(e) => field("title", e.target.value)}
-          className="bg-transparent border-b border-ink/10 pb-4 text-4xl font-serif focus:outline-none focus:border-[var(--color-accent)] transition-colors"
+          className="post-title-input bg-transparent border-b border-ink/20 pb-4 text-4xl font-serif text-ink focus:outline-none focus:border-[var(--color-accent)] transition-colors"
         />
         <RichTextEditor
           value={form.content}

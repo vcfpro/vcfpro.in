@@ -141,7 +141,7 @@ export function RichTextEditor({ value, onChange, placeholder, minHeight = "500p
     content: value,
     editorProps: {
       attributes: {
-        class: "tiptap-editor w-full bg-transparent p-4 text-xs md:text-[13px] text-ink focus:outline-none overflow-y-auto font-sans font-light leading-relaxed prose max-w-none",
+        class: "tiptap-editor w-full bg-transparent p-4 text-xs md:text-[13px] focus:outline-none overflow-y-auto font-sans font-normal leading-relaxed prose max-w-none",
         style: `min-height: ${minHeight};`,
       },
       transformPastedHTML: sanitizeHtml,
@@ -191,7 +191,7 @@ export function RichTextEditor({ value, onChange, placeholder, minHeight = "500p
 
   return (
     <div className="flex flex-col border border-card-border rounded-xl overflow-hidden focus-within:border-[var(--color-accent)]/80 transition-all" style={{ backgroundColor: "var(--editor-bg)", color: "var(--editor-ink)" }}>
-      <div className="flex flex-wrap items-center gap-1 p-2 bg-[#000000]/10 dark:bg-white/[0.02] border-b border-card-border select-none">
+      <div className="rich-text-toolbar flex flex-wrap items-center gap-1 p-2 bg-[#000000]/10 dark:bg-white/[0.04] border-b border-card-border select-none">
         <div className="flex items-center gap-1 mr-1 border-r border-card-border pr-2 relative z-50">
           <select className="text-xs bg-transparent text-ink/80 border border-card-border rounded px-2 py-1" value={currentFontFamily} onChange={(e) => editor.chain().focus().setMark("textStyle", { fontFamily: e.target.value || null }).run()}>
             <option value="">Font</option>
@@ -262,7 +262,7 @@ export function RichTextEditor({ value, onChange, placeholder, minHeight = "500p
         )}
       </div>
       <div className="relative flex-1">
-        {editor.isEmpty && <div className="absolute top-4 left-4 text-ink/35 pointer-events-none text-xs md:text-[13px] font-sans font-light select-none">{placeholder}</div>}
+        {editor.isEmpty && <div className="editor-placeholder absolute top-4 left-4 pointer-events-none text-xs md:text-[13px] font-sans font-normal select-none">{placeholder}</div>}
         <EditorContent editor={editor} />
       </div>
     </div>

@@ -305,6 +305,33 @@ html.light .home-bento-grid .glass-panel {
   margin-bottom: 21px;
   color: var(--color-muted);
 }
+
+/* The post editor is a writing surface, not a published article preview.
+ * Keep its content high-contrast even though site-wide prose paragraphs use
+ * the intentionally muted public-reading colour. Inline author colours still
+ * win because they are applied directly to the edited elements. */
+.tiptap-editor {
+  color: var(--editor-ink, var(--color-ink));
+}
+.tiptap-editor.prose :where(p, li, blockquote, a, code) {
+  color: color-mix(in srgb, var(--editor-ink, var(--color-ink)) 90%, transparent);
+}
+.tiptap-editor.prose :where(h1, h2, h3, h4, strong, b) {
+  color: var(--editor-ink, var(--color-ink));
+}
+.rich-text-toolbar {
+  color: color-mix(in srgb, var(--editor-ink, var(--color-ink)) 88%, transparent);
+}
+.rich-text-toolbar :where(button, select) {
+  color: inherit;
+}
+.editor-placeholder {
+  color: color-mix(in srgb, var(--editor-ink, var(--color-ink)) 58%, transparent);
+}
+.post-title-input::placeholder {
+  color: color-mix(in srgb, var(--color-ink) 60%, transparent);
+  opacity: 1;
+}
 .prose :where(h1) {
   font-size: 28.8px;
   line-height: 1.5;
