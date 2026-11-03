@@ -73,15 +73,21 @@ const OPTIMIZED_BACKGROUND_VIDEOS = [
     src: "/media/software-background.mp4",
     poster: "/media/software-background.webp",
   },
+  {
+    sourceId: "1784040983943-0a10d7df-d442-43b3-b726-f7c843187f91",
+    src: "/media/explore-background.mp4",
+    poster: "/media/explore-background.webp",
+  },
 ];
 
 function optimizedBackgroundVideo(src: string) {
-  return OPTIMIZED_BACKGROUND_VIDEOS.find(({ sourceId }) => src.includes(sourceId)) ?? { src, poster: undefined };
+  return OPTIMIZED_BACKGROUND_VIDEOS.find(({ sourceId }) => src.includes(sourceId)) ?? { src, poster: "/media/video-fallback.svg" };
 }
 
 function DeferredBackgroundVideo({ src, poster, delay, className }: { src: string; poster?: string; delay: number; className: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [active, setActive] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -105,18 +111,30 @@ function DeferredBackgroundVideo({ src, poster, delay, className }: { src: strin
   }, [delay]);
 
   return (
-    <video
-      ref={videoRef}
-      src={active ? src : undefined}
-      poster={poster}
-      autoPlay={active}
-      loop
-      muted
-      playsInline
-      preload={active ? "auto" : "none"}
-      aria-hidden="true"
-      className={className}
-    />
+    <>
+      {poster && (
+        <img
+          src={poster}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          fetchPriority="high"
+          className={`${className} transition-opacity duration-500 ${ready ? "!opacity-0" : ""}`}
+        />
+      )}
+      <video
+        ref={videoRef}
+        src={active ? src : undefined}
+        autoPlay={active}
+        loop
+        muted
+        playsInline
+        preload={active ? "auto" : "none"}
+        onCanPlay={() => setReady(true)}
+        aria-hidden="true"
+        className={`${className} transition-opacity duration-500 ${poster && !ready ? "!opacity-0" : ""}`}
+      />
+    </>
   );
 }
 
@@ -444,7 +462,7 @@ export function Home() {
             {layoutControls("stats")}
             <div className="rounded-2xl glass-panel text-ink relative flex flex-col justify-center items-center overflow-hidden h-full min-h-[220px] w-full transition-all duration-300">
               {settings.bgVideo2 && (
-                <DeferredBackgroundVideo src={settings.bgVideo2} delay={1500} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
+                <DeferredBackgroundVideo {...optimizedBackgroundVideo(settings.bgVideo2)} delay={0} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
               )}
               <div className="relative z-10 text-center">
                 <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-light tracking-tight drop-shadow-2xl text-ink">{settings.statsLabel}</h2>

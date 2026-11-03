@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="Abstract blue and teal background">
+  <defs>
+    <radialGradient id="glow-a" cx="52%" cy="42%" r="58%">
+      <stop offset="0" stop-color="#28d7c0" stop-opacity=".62"/>
+      <stop offset=".28" stop-color="#147b91" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#03090f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-b" cx="16%" cy="12%" r="76%">
+      <stop offset="0" stop-color="#2864b8" stop-opacity=".4"/>
+      <stop offset="1" stop-color="#020509" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+  <rect width="960" height="540" fill="#020509"/>
+  <rect width="960" height="540" fill="url(#glow-b)"/>
+  <rect width="960" height="540" fill="url(#glow-a)"/>
+  <g fill="#6df5df" filter="url(#blur)" opacity=".32">
+    <circle cx="490" cy="210" r="34"/>
+    <circle cx="390" cy="310" r="16"/>
+    <circle cx="610" cy="285" r="22"/>
+  </g>
+  <g fill="#b6fff4" opacity=".32">
+    <circle cx="230" cy="160" r="2"/>
+    <circle cx="350" cy="260" r="3"/>
+    <circle cx="475" cy="145" r="2"/>
+    <circle cx="535" cy="305" r="3"/>
+    <circle cx="675" cy="205" r="2"/>
+    <circle cx="745" cy="340" r="3"/>
+    <circle cx="805" cy="135" r="2"/>
+  </g>
+</svg>
