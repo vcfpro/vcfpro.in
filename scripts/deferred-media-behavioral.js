@@ -1,11 +1,23 @@
 const { chromium } = require("playwright");
 
 const base = process.env.BASE_URL || "https://vcfpro.in/?release=d609812";
-const videoHosts = ["pexels.com", "videotourl.com"];
+const apiOrigin = process.env.API_ORIGIN;
+const remoteVideoHosts = ["pexels.com", "videotourl.com"];
+const optimizedVideos = ["/media/experience-background.mp4", "/media/software-background.mp4"];
 
 function check(condition, message) {
   if (!condition) throw new Error(message);
   console.log(`[PASS] ${message}`);
+}
+
+async function proxyApi(page) {
+  if (!apiOrigin) return;
+
+  await page.route("**/api/**", async (route) => {
+    const requestUrl = new URL(route.request().url());
+    const response = await route.fetch({ url: `${apiOrigin}${requestUrl.pathname}${requestUrl.search}` });
+    await route.fulfill({ response });
+  });
 }
 
 (async () => {
@@ -13,31 +25,39 @@ function check(condition, message) {
 
   try {
     const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    await proxyApi(mobile);
     const mobileVideoRequests = [];
     mobile.on("request", (request) => {
-      if (videoHosts.some((host) => request.url().includes(host))) mobileVideoRequests.push(request.url());
+      if (request.resourceType() === "media") mobileVideoRequests.push(request.url());
     });
     await mobile.goto(base, { waitUntil: "domcontentloaded", timeout: 60000 });
     await mobile.getByRole("heading", { level: 1 }).waitFor();
     await mobile.waitForTimeout(2000);
-    check(mobileVideoRequests.length === 0, "Mobile initial load does not download off-screen background videos");
+    check(mobileVideoRequests.length <= 1, "Mobile initial load does not download distant background videos");
     await mobile.close();
 
     const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    const desktopVideoRequestTimes = [];
+    await proxyApi(desktop);
+    const desktopVideoRequests = [];
     desktop.on("request", (request) => {
-      if (videoHosts.some((host) => request.url().includes(host))) {
-        desktopVideoRequestTimes.push(Date.now());
+      if (request.resourceType() === "media") {
+        desktopVideoRequests.push({ url: request.url(), time: Date.now() });
       }
     });
     await desktop.goto(base, { waitUntil: "domcontentloaded", timeout: 60000 });
     await desktop.getByRole("heading", { level: 1 }).waitFor();
     const contentReadyAt = Date.now();
-    await desktop.waitForTimeout(3200);
-    const desktopVideoStarts = desktopVideoRequestTimes.map((time) => time - contentReadyAt);
-    check(desktopVideoStarts.every((start) => start >= 400), "Desktop background media waits until after primary content renders");
-    const roundedStarts = [...new Set(desktopVideoStarts.map((start) => Math.round(start / 500) * 500))];
-    check(roundedStarts.length === desktopVideoStarts.length, "Visible desktop videos start in separate staggered windows");
+    await desktop.waitForTimeout(1000);
+    await desktop.locator("video").last().scrollIntoViewIfNeeded();
+    const softwareCardRevealedAt = Date.now();
+    await desktop.waitForTimeout(1500);
+    const optimizedRequests = desktopVideoRequests.filter(({ url }) => optimizedVideos.some((path) => url.includes(path)));
+    check(optimizedRequests.length === 2, "Visible desktop cards request both optimized local videos");
+    const experienceRequest = optimizedRequests.find(({ url }) => url.includes("experience-background.mp4"));
+    const softwareRequest = optimizedRequests.find(({ url }) => url.includes("software-background.mp4"));
+    check(experienceRequest.time - contentReadyAt < 1000, "Initially visible experience video starts promptly");
+    check(softwareRequest.time - softwareCardRevealedAt < 1000, "Software video starts promptly when its card approaches the viewport");
+    check(desktopVideoRequests.every(({ url }) => !remoteVideoHosts.some((host) => url.includes(host)) || url.includes("videotourl.com")), "Replaced Pexels videos are not downloaded from third-party hosts");
   } finally {
     await browser.close();
   }

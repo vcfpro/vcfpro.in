@@ -62,7 +62,24 @@ function SparkleIcon({ className }: { className?: string }) {
   return <Sparkles className={className || "w-3 h-3"} strokeWidth={1.5} aria-hidden="true" />;
 }
 
-function DeferredBackgroundVideo({ src, delay, className }: { src: string; delay: number; className: string }) {
+const OPTIMIZED_BACKGROUND_VIDEOS = [
+  {
+    sourceId: "33691299",
+    src: "/media/experience-background.mp4",
+    poster: "/media/experience-background.webp",
+  },
+  {
+    sourceId: "35977122",
+    src: "/media/software-background.mp4",
+    poster: "/media/software-background.webp",
+  },
+];
+
+function optimizedBackgroundVideo(src: string) {
+  return OPTIMIZED_BACKGROUND_VIDEOS.find(({ sourceId }) => src.includes(sourceId)) ?? { src, poster: undefined };
+}
+
+function DeferredBackgroundVideo({ src, poster, delay, className }: { src: string; poster?: string; delay: number; className: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [active, setActive] = useState(false);
 
@@ -77,7 +94,7 @@ function DeferredBackgroundVideo({ src, delay, className }: { src: string; delay
         observer.disconnect();
         timer = setTimeout(() => setActive(true), delay);
       },
-      { rootMargin: "50px" },
+      { rootMargin: "300px" },
     );
     observer.observe(video);
 
@@ -87,7 +104,20 @@ function DeferredBackgroundVideo({ src, delay, className }: { src: string; delay
     };
   }, [delay]);
 
-  return <video ref={videoRef} src={active ? src : undefined} autoPlay={active} loop muted playsInline preload="none" aria-hidden="true" className={className} />;
+  return (
+    <video
+      ref={videoRef}
+      src={active ? src : undefined}
+      poster={poster}
+      autoPlay={active}
+      loop
+      muted
+      playsInline
+      preload={active ? "auto" : "none"}
+      aria-hidden="true"
+      className={className}
+    />
+  );
 }
 
 const INTRO_SECTION_HEADINGS = ["Why I Created vcfpro.in", "How This Blog Will Help VCF Admins and Consultants"];
@@ -354,7 +384,7 @@ export function Home() {
             {layoutControls("timeline")}
             <div className="home-image-tile rounded-2xl glass-panel text-ink relative flex flex-col justify-between overflow-hidden p-6 md:p-8 h-full w-full shadow-2xl transition-all duration-300">
               {settings.bgVideo1 && (
-                <DeferredBackgroundVideo src={settings.bgVideo1} delay={500} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-screen" />
+                <DeferredBackgroundVideo {...optimizedBackgroundVideo(settings.bgVideo1)} delay={0} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-screen" />
               )}
               <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-bg via-bg/80 to-transparent" />
               <div className="relative z-10 flex items-center justify-center gap-3">
@@ -435,7 +465,7 @@ export function Home() {
             {layoutControls("software")}
             <div className="home-image-tile rounded-2xl glass-panel text-ink relative flex flex-col justify-between overflow-hidden pt-6 h-full min-h-[225px] pb-4 transition-all duration-300 w-full">
               {settings.bgVideo3 && (
-                <DeferredBackgroundVideo src={settings.bgVideo3} delay={2500} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
+                <DeferredBackgroundVideo {...optimizedBackgroundVideo(settings.bgVideo3)} delay={0} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
               )}
               <div className="relative z-10 flex items-center justify-center gap-3 px-6 pb-4">
                 <span className="text-[11px] uppercase tracking-[0.22em] text-ink/70 font-semibold text-center w-full block">{settings.softwareLabel}</span>
