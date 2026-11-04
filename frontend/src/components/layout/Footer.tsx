@@ -47,15 +47,15 @@ export function Footer() {
     <footer className="relative z-10 px-6 md:px-12 py-8 border-t border-ink/5 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0 mt-[auto]">
       <div className="flex gap-8 md:gap-12">
         <div>
-          <div className="text-[9px] text-ink/30 uppercase tracking-widest mb-1">Readers Online</div>
+          <div className="text-[9px] text-ink/60 font-semibold uppercase tracking-widest mb-1">Readers Online</div>
           <div className="text-lg font-mono tracking-tighter text-ink">1</div>
         </div>
         <div>
-          <div className="text-[9px] text-ink/30 uppercase tracking-widest mb-1">Articles Published</div>
+          <div className="text-[9px] text-ink/60 font-semibold uppercase tracking-widest mb-1">Articles Published</div>
           <div className="text-lg font-mono tracking-tighter text-ink">{articleCount ?? "-"}</div>
         </div>
         <div className="hidden sm:block">
-          <div className="text-[9px] text-ink/30 uppercase tracking-widest mb-1">Curation Rating</div>
+          <div className="text-[9px] text-ink/60 font-semibold uppercase tracking-widest mb-1">Curation Rating</div>
           <div className="text-lg font-mono tracking-tighter text-[var(--color-accent)]">{curationRating}/10</div>
         </div>
       </div>
@@ -73,7 +73,7 @@ export function Footer() {
 
       <div className="flex items-center gap-4 hidden sm:flex">
         <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-        <span className="text-[10px] text-ink/30 uppercase tracking-widest">Server Latency: ~24ms</span>
+        <span className="text-[10px] text-ink/60 font-semibold uppercase tracking-widest">Server Latency: ~24ms</span>
       </div>
     </footer>
   );
