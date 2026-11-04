@@ -48,20 +48,20 @@ export function Footer() {
       <div className="flex gap-8 md:gap-12">
         <div>
           <div className="text-[9px] text-ink/30 uppercase tracking-widest mb-1">Readers Online</div>
-          <div className="text-lg font-mono tracking-tighter text-white">1</div>
+          <div className="text-lg font-mono tracking-tighter text-ink">1</div>
         </div>
         <div>
-          <div className="text-[9px] text-white/30 uppercase tracking-widest mb-1">Articles Published</div>
-          <div className="text-lg font-mono tracking-tighter text-white">{articleCount ?? "-"}</div>
+          <div className="text-[9px] text-ink/30 uppercase tracking-widest mb-1">Articles Published</div>
+          <div className="text-lg font-mono tracking-tighter text-ink">{articleCount ?? "-"}</div>
         </div>
         <div className="hidden sm:block">
-          <div className="text-[9px] text-white/30 uppercase tracking-widest mb-1">Curation Rating</div>
+          <div className="text-[9px] text-ink/30 uppercase tracking-widest mb-1">Curation Rating</div>
           <div className="text-lg font-mono tracking-tighter text-[var(--color-accent)]">{curationRating}/10</div>
         </div>
       </div>
 
       <div className="group relative cursor-default">
-        <span className="text-[10px] text-white/5 uppercase tracking-tighter group-hover:text-[var(--color-accent)]/40 transition-colors duration-500">
+        <span className="text-[10px] text-ink/10 uppercase tracking-tighter group-hover:text-[var(--color-accent)]/40 transition-colors duration-500">
           System Active
         </span>
         <div className="absolute bottom-full right-1/2 translate-x-1/2 md:translate-x-0 md:right-0 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
@@ -73,7 +73,7 @@ export function Footer() {
 
       <div className="flex items-center gap-4 hidden sm:flex">
         <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-        <span className="text-[10px] text-white/30 uppercase tracking-widest">Server Latency: ~24ms</span>
+        <span className="text-[10px] text-ink/30 uppercase tracking-widest">Server Latency: ~24ms</span>
       </div>
     </footer>
   );
