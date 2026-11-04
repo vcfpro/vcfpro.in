@@ -460,9 +460,9 @@ export function Home() {
             className="col-span-1 min-h-[220px] relative group overflow-hidden rounded-2xl cursor-pointer"
           >
             {layoutControls("stats")}
-            <div className="rounded-2xl glass-panel text-ink relative flex flex-col justify-center items-center overflow-hidden h-full min-h-[220px] w-full transition-all duration-300">
+            <div className="rounded-2xl glass-panel bg-[#061b61] text-ink relative flex flex-col justify-center items-center overflow-hidden h-full min-h-[220px] w-full transition-all duration-300">
               {settings.bgVideo2 && (
-                <DeferredBackgroundVideo {...optimizedBackgroundVideo(settings.bgVideo2)} delay={0} className="home-tile-media absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
+                <DeferredBackgroundVideo {...optimizedBackgroundVideo(settings.bgVideo2)} delay={0} className="home-tile-media absolute inset-0 w-full h-full object-contain opacity-60 mix-blend-screen" />
               )}
               <div className="relative z-10 text-center">
                 <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-light tracking-tight drop-shadow-2xl text-ink">{settings.statsLabel}</h2>
