@@ -91,7 +91,7 @@ export function Blog() {
         {visiblePosts.map((post) => (
           <div key={post.id} className="group">
             <Link
-              className="py-10 flex flex-col md:flex-row md:items-start gap-4 md:gap-12 glass-panel p-8 hover:border-[var(--color-accent)]/50 transition-colors duration-300 rounded-2xl"
+              className="py-10 flex flex-col md:flex-row md:items-start gap-4 md:gap-12 glass-panel p-8 hover:border-[var(--color-accent)]/50 transition-colors duration-300 rounded-2xl overflow-hidden"
               to={`/post/${post.slug}`}
               onMouseEnter={() => prefetchPost(post.slug)}
               onFocus={() => prefetchPost(post.slug)}
@@ -99,13 +99,13 @@ export function Blog() {
               <div className="text-sm font-mono text-ink/40 md:w-32 flex-shrink-0 mt-1">
                 {formatDate(post.published_at || post.created_at)}
               </div>
-              <div className="flex-1">
-                <h2 className="text-2xl font-serif font-medium group-hover:text-[var(--color-accent)] transition-colors mb-4">
+              <div className="flex-1 min-w-0">
+                <h2 className="text-2xl font-serif font-medium group-hover:text-[var(--color-accent)] transition-colors mb-4 break-words [overflow-wrap:anywhere]">
                   {post.title}
                 </h2>
                 <div className="text-xs text-ink/40 leading-relaxed">{post.excerpt}</div>
               </div>
-              <div className="hidden md:flex flex-col items-end shrink-0">
+              <div className="hidden md:flex w-28 flex-col items-end shrink-0">
                 {post.category_name && (
                   <div className="text-[10px] uppercase tracking-widest text-[var(--color-accent)] font-bold">
                     {post.category_name}
@@ -114,7 +114,7 @@ export function Blog() {
                 {author && (
                   <div className="mt-8 flex items-center gap-2">
                     <img alt="Author" className="w-6 h-6 rounded-full object-cover border border-ink/10" src={author.avatar} />
-                    <div className="text-[9px] text-white/30 truncate max-w-[80px]">{author.name}</div>
+                    <div className="text-[9px] text-ink/40 truncate max-w-[80px]">{author.name}</div>
                   </div>
                 )}
               </div>
