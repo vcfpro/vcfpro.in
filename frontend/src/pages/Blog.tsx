@@ -47,7 +47,7 @@ export function Blog() {
   }, [posts, selectedCategory]);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12">
+    <div className="max-w-6xl mx-auto px-6 py-12">
       <h1 className="text-5xl font-serif mb-8 text-center italic tracking-tight opacity-90 text-[var(--color-ink)]">
         Archive
       </h1>
@@ -105,9 +105,9 @@ export function Blog() {
                 </h2>
                 <div className="text-xs text-ink/40 leading-relaxed">{post.excerpt}</div>
               </div>
-              <div className="hidden md:flex w-28 flex-col items-end shrink-0">
+              <div className="hidden md:flex w-52 lg:w-56 flex-col items-end shrink-0">
                 {post.category_name && (
-                  <div className="text-[10px] uppercase tracking-widest text-[var(--color-accent)] font-bold">
+                  <div className="text-[10px] uppercase tracking-widest whitespace-nowrap text-[var(--color-accent)] font-bold">
                     {post.category_name}
                   </div>
                 )}
