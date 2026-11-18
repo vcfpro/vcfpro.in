@@ -111,8 +111,8 @@ export function Header() {
           </button>
 
           <Link
-            title="Admin Login"
-            className="hidden md:flex w-10 h-10 rounded-full border border-card-border items-center justify-center text-ink/70 hover:text-ink hover:bg-ink/10 transition-colors flex-shrink-0"
+            aria-label="Admin login"
+            className="hidden md:flex w-10 h-10 rounded-full border border-transparent items-center justify-center text-ink opacity-0 hover:opacity-[0.08] hover:border-card-border focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)] transition-all flex-shrink-0"
             to="/admin"
           >
             <User size={16} />
