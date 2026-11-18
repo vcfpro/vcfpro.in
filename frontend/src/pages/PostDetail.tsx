@@ -1,4 +1,4 @@
-import { LogIn, MessageSquare, ThumbsDown, ThumbsUp, TrendingUp, UserPlus } from "lucide-react";
+import { MessageSquare, ThumbsDown, ThumbsUp, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -350,23 +350,6 @@ export function PostDetail() {
             </div>
           </div>
         )}
-
-        <div className="mt-12 p-5 rounded-2xl bg-[#000000]/5 dark:bg-[#080808] border border-card-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <div className="text-left">
-            <div className="font-semibold text-ink tracking-wide">Comment with custom credentials</div>
-            <div className="text-ink/40 mt-1">Register to post comments with an official Member label or write below as reader.</div>
-          </div>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <button className="flex-1 sm:flex-none px-4 py-2.5 bg-ink text-bg hover:opacity-90 text-[10px] uppercase font-bold tracking-widest rounded-lg flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
-              <LogIn size={12} />
-              Login
-            </button>
-            <button className="flex-1 sm:flex-none px-4 py-2.5 border border-card-border hover:border-ink/50 text-[10px] uppercase font-bold tracking-widest rounded-lg flex items-center justify-center gap-1.5 transition-colors text-ink cursor-pointer">
-              <UserPlus size={12} />
-              Register
-            </button>
-          </div>
-        </div>
 
         <section className="mt-16 border-t border-card-border pt-12">
           <div className="flex items-center gap-2 mb-8">
